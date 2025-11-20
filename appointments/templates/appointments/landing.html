@@ -1,0 +1,926 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J'ink Studio - Where Art Meets Skin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+            .hero h1 {
+                font-size: 4rem;
+                font-weight: 900;
+                color: #fff;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-bottom: 10px;
+                text-shadow: 2px 2px 20px rgba(0,0,0,0.8);
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                color: #dddddd;
+                margin-bottom: 40px;
+                max-width: 600px;
+            }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: transparent;
+            color: #fff;
+            border-color: #fff;
+        }
+
+            .btn-primary:hover {
+                background: #fff;
+                color: #000;
+            }
+
+        .btn-secondary {
+            background: #d4af37;
+            color: #000;
+            border-color: #d4af37;
+        }
+
+            .btn-secondary:hover {
+                background: transparent;
+                color: #d4af37;
+            }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+            nav ul li a {
+                color: #fff;
+                text-decoration: none;
+                transition: color 0.3s;
+                font-weight: 500;
+            }
+
+                nav ul li a:hover {
+                    color: #d4af37;
+                }
+
+        /* Section Styling */
+        section {
+            padding: 80px 50px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            color: #d4af37;
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+            .section-title::after {
+                content: '⚡⚡⚡';
+                display: block;
+                font-size: 1.5rem;
+                margin-top: 10px;
+            }
+
+        /* Styles Gallery */
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .style-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+            .style-card:hover {
+                transform: translateY(-10px);
+            }
+
+            .style-card img {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+            }
+
+        .style-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 20px;
+            text-align: center;
+        }
+
+            .style-overlay h3 {
+                color: #d4af37;
+                text-transform: uppercase;
+                font-size: 1.2rem;
+            }
+
+        /* Story Section */
+        .story {
+            background: #1a1a1a;
+            text-align: center;
+        }
+
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #cccccc;
+        }
+
+        /* Artists Grid */
+        .artists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .artist-card {
+            background: #1a1a1a;
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+            .artist-card:hover {
+                transform: scale(1.05);
+            }
+
+            .artist-card img {
+                width: 100%;
+                height: 250px;
+                object-fit: cover;
+                filter: grayscale(100%);
+                transition: filter 0.3s;
+            }
+
+            .artist-card:hover img {
+                filter: grayscale(0%);
+            }
+
+        .artist-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+            .artist-info h3 {
+                color: #d4af37;
+                font-size: 1.3rem;
+                margin-bottom: 5px;
+                text-transform: uppercase;
+            }
+
+        .artist-role {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .artist-links a {
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0 10px;
+        }
+
+        /* Studios */
+        .studios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .studio-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            height: 400px;
+        }
+
+            .studio-card img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s;
+            }
+
+            .studio-card:hover img {
+                transform: scale(1.1);
+            }
+
+        .studio-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.95));
+            padding: 30px;
+        }
+
+            .studio-overlay h3 {
+                color: #d4af37;
+                font-size: 1.5rem;
+                margin-bottom: 5px;
+            }
+
+            .studio-overlay p {
+                color: #ccc;
+            }
+
+        /* Reviews */
+        .reviews {
+            background: #1a1a1a;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .review-card {
+            background: #0a0a0a;
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 4px solid #d4af37;
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .review-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #d4af37;
+            margin-right: 15px;
+        }
+
+        .review-stars {
+            color: #d4af37;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .review-text {
+            color: #ccc;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Enquiry Form */
+        .enquiry {
+            background: linear-gradient(135deg, #1a4d4d 0%, #0a2a2a 100%);
+            padding: 80px 50px;
+        }
+
+        .enquiry-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .enquiry h2 {
+            color: #d4af37;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .enquiry p {
+            color: #ccc;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+            .form-group label {
+                display: block;
+                color: #d4af37;
+                margin-bottom: 8px;
+                font-weight: bold;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                width: 100%;
+                padding: 15px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 2px solid #d4af37;
+                border-radius: 5px;
+                color: #fff;
+                font-size: 1rem;
+            }
+
+                .form-group input:focus,
+                .form-group textarea:focus {
+                    outline: none;
+                    background: rgba(255, 255, 255, 0.15);
+                }
+
+            .form-group textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #d4af37;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+            .submit-btn:hover {
+                background: #fff;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5);
+            }
+
+        /* Messages */
+        .messages {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background: #d4af37;
+            color: #000;
+            font-weight: bold;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: #000;
+            padding: 50px;
+            text-align: center;
+            border-top: 2px solid #d4af37;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: left;
+        }
+
+        .footer-section h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+            .footer-section a:hover {
+                color: #d4af37;
+            }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+            .social-links a {
+                color: #d4af37;
+                font-size: 1.5rem;
+            }
+
+        .copyright {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            nav {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+                nav ul {
+                    flex-direction: column;
+                    gap: 10px;
+                    text-align: center;
+                }
+
+            section {
+                padding: 50px 20px;
+            }
+
+            .studios-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Navigation -->
+    <nav>
+        <a href="{% url 'appointments:landing' %}" class="logo"> J'INK STUDIO </a>
+        <ul>
+            <li><a href="#styles">Styles</a></li>
+            <li><a href="#story">Our Story</a></li>
+            <li><a href="#artists">Artists</a></li>
+            <li><a href="#studios">Studios</a></li>
+            <li><a href="#reviews">Reviews</a></li>
+            <li><a href="{% url 'appointments:login' %}">Login</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>WELCOME TO<br>J'INK TATTOO STUDIO'</h1>
+        <p>This Tattoo Appointment System is a Final Project in-- </p>
+        <div class="hero-buttons">
+            <a href="#styles" class="btn btn-primary">View Gallery</a>
+            <a href="#enquiry" class="btn btn-secondary">Tattoo Enquiry</a>
+        </div>
+    </section>
+
+    <!-- Tattoo Styles -->
+    <section id="styles">
+        <h2 class="section-title">Our Styles</h2>
+        <div class="styles-grid">
+            {% for style in styles %}
+            <div class="style-card">
+                <img src="{{ style.image_url|default:'https://images.unsplash.com/photo-1590246814883-57c511e0deed?w=400' }}" alt="{{ style.name }}">
+                <div class="style-overlay">
+                    <h3>{{ style.name }}</h3>
+                </div>
+            </div>
+            {% empty %}
+            <div class="style-card">
+                <img src="https://images.unsplash.com/photo-1590246814883-57c511e0deed?w=400" alt="Portrait Realism">
+                <div class="style-overlay">
+                    <h3>Portrait Realism</h3>
+                </div>
+            </div>
+            <div class="style-card">
+                <img src="https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?w=400" alt="Geometric Dotwork">
+                <div class="style-overlay">
+                    <h3>Geometric Dotwork</h3>
+                </div>
+            </div>
+            <div class="style-card">
+                <img src="https://images.unsplash.com/photo-1565058536970-f896b3f2f04e?w=400" alt="Blackwork">
+                <div class="style-overlay">
+                    <h3>Blackwork</h3>
+                </div>
+            </div>
+            <div class="style-card">
+                <img src="https://images.unsplash.com/photo-1598386993441-06c1f7a4d04c?w=400" alt="Fine Line">
+                <div class="style-overlay">
+                    <h3>Delicate Feminine Line Work</h3>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Our Story -->
+    <section id="story" class="story">
+        <h2 class="section-title">About</h2>
+        <div class="story-content">
+            <p>This Tattoo Appointments system is a Project in --.</p>
+         
+           
+            <br>
+            <a href="#enquiry" class="btn btn-secondary">More</a>
+        </div>
+    </section>
+
+    <!-- Artists -->
+    <section id="artists">
+        <h2 class="section-title">Our Artists</h2>
+        <div class="artists-grid">
+            {% for artist in artists %}
+            <div class="artist-card">
+                <img src="{{ artists.image.url }}" alt="{{ artists.name }}" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400'">             
+                <div class="artist-info">
+                    <h3>{{ artists.name }}</h3>
+                    <p class="artist-role">{{ artists.get_role_display }}</p>
+                    <div class="artist-links">
+                        <a href="#">View Portfolio ></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="artist-card">
+                <img src="" alt="Rob">
+                <div class="artist-info">
+                    <h3>Rob</h3>
+                    <p class="artist-role">Owner</p>
+                    <div class="artist-links">
+                        <a href="#">View Portfolio ></a>
+                    </div>
+                </div>
+            </div>
+            <div class="artist-card">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400" alt="Sanjay">
+                <div class="artist-info">
+                    <h3>Sanjay</h3>
+                    <p class="artist-role">Manager</p>
+                    <div class="artist-links">
+                        <a href="#">View Portfolio ></a>
+                    </div>
+                </div>
+            </div>
+            <div class="artist-card">
+                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400" alt="Raphael">
+                <div class="artist-info">
+                    <h3>Raphael</h3>
+                    <p class="artist-role">Resident Artist</p>
+                    <div class="artist-links">
+                        <a href="#">View Portfolio ></a>
+                    </div>
+                </div>
+            </div>
+            <div class="artist-card">
+                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400" alt="Harrison">
+                <div class="artist-info">
+                    <h3>Harrison</h3>
+                    <p class="artist-role">Resident Artist</p>
+                    <div class="artist-links">
+                        <a href="#">View Portfolio ></a>
+                    </div>
+                </div>
+            </div>
+            <div class="artist-card">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400" alt="Jen">
+                <div class="artist-info">
+                    <h3>Jen</h3>
+                    <p class="artist-role">Apprentice</p>
+                    <div class="artist-links">
+                        <a href="#">View Portfolio ></a>
+                    </div>
+                </div>
+            </div>
+            <div class="artist-card">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400" alt="Lauren">
+                <div class="artist-info">
+                    <h3>Lauren</h3>
+                    <p class="artist-role">Guest Artist</p>
+                    <div class="artist-links">
+                        <a href="#">View Portfolio ></a>
+                    </div>
+                </div>
+            </div>
+            <div class="artist-card">
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400" alt="Raul">
+                <div class="artist-info">
+                    <h3>Raul</h3>
+                    <p class="artist-role">Guest Artist</p>
+                    <div class="artist-links">
+                        <a href="#">View Portfolio ></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Studios -->
+    <section id="studios">
+        <h2 class="section-title">Our Studios</h2>
+        <div class="studios-grid">
+            {% for studio in studios %}
+            <div class="studio-card">
+                <img src="{{ studio.image_url|default:'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=800' }}" alt="{{ studio.name }}">
+                <div class="studio-overlay">
+                    <h3>{{ studio.name }}</h3>
+                    <p>{{ studio.city }}, {{ studio.country }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="studio-card">
+                <img src="https://images.unsplash.com/photo-1585421514738-01798e348b17?w=800" alt="Squidink Tattoo UK">
+                <div class="studio-overlay">
+                    <h3>SQUIDINK TATTOO UK</h3>
+                    <p>Folkestone, Kent</p>
+                </div>
+            </div>
+            <div class="studio-card">
+                <img src="https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?w=800" alt="Squidink Tattoo Spain">
+                <div class="studio-overlay">
+                    <h3>SQUIDINK TATTOO SPAIN</h3>
+                    <p>Ampuriabrava, Girona</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Reviews -->
+    <section id="reviews" class="reviews">
+        <h2 class="section-title">Our Reviews</h2>
+        <div class="reviews-grid">
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar"></div>
+                    <div>
+                        <h4>{{ review.client_name }}</h4>
+                        <div class="review-stars">
+                            {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <p class="review-text">"{{ review.review_text }}"</p>
+            </div>
+            {% empty %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar"></div>
+                    <div>
+                        <h4>Sarah Kim Tablan</h4>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="review-text">"Got my sleeve tattoos done by Matt and I just LOVE them! Professional, creative and amazing vibe. Will definitely be coming back for more ink!"</p>
+            </div>
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar"></div>
+                    <div>
+                        <h4>Jane</h4>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="review-text">"Had my nana tattoo done by Matt and I am impressed. Went in for a consultation yesterday and came out today with a fresh tattoo. Amazing attention to detail in both. Highly recommend!"</p>
+            </div>
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar"></div>
+                    <div>
+                        <h4>Danielo Brown</h4>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="review-text">"Best results in the land! All recommended very clean and detailed. 3 pieces tattooed & more to come I loved it!"</p>
+            </div>
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar"></div>
+                    <div>
+                        <h4>Martin Mills</h4>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="review-text">"I had my very first tattoo at this wonderful studio. Highly professional yet friendly atmosphere, and I love the result! Will definitely be back!"</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Tattoo Enquiry Form -->
+    <section id="enquiry" class="enquiry">
+        <div class="enquiry-container">
+            <h2>TATTOO ENQUIRY</h2>
+            <p>Interested in getting a tattoo? A tattoo is a lifetime commitment. Let us know your ideas so we can book a time for you!</p>
+
+            <form method="POST" action="{% url 'appointments:enquiry_submit' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Your Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Tell Us About Your Tattoo Idea *</label>
+                    <textarea id="message" name="message" required placeholder="Describe your tattoo design, placement, size, etc."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="preferred_date">Preferred Date (Optional)</label>
+                    <input type="date" id="preferred_date" name="preferred_date">
+                </div>
+
+                <button type="submit" class="submit-btn">TATTOO ENQUIRY</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>☠️ J'ink Studio</h3>
+                <p>Where Art Meets Skin</p>
+                <p>Crafting Legends Since 2025</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <a href="#story">Our Story</a>
+                <a href="#artists">Our Artists</a>
+                <a href="#studios">Studios</a>
+                <a href="#styles">Gallery</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>📧 info@jinktattoo.com</p>
+                <p>📱 +34 567 890 123</p>
+                <p>
+                    📍 Ampuriabrava, LA 4, A1
+
+                    234 Calabarzon, Maloles, Spain
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#">📘</a>
+                    <a href="#">📷</a>
+                    <a href="#">🐦</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="copyright">
+            <p>© 2025 J'ink Studio. All Rights Reserved | Web design by Bitdesigns</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Auto-hide messages after 5 seconds
+        setTimeout(function() {
+            const messages = document.querySelector('.messages');
+            if (messages) {
+                messages.style.opacity = '0';
+                messages.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => messages.remove(), 500);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

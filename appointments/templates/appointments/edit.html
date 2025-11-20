@@ -1,0 +1,161 @@
+﻿{% extends 'appointments/base.html' %}
+
+{% block title %}Edit Appointment - J'ink Tattoo Appointment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 40px;
+        background: rgba(26, 26, 26, 0.95);
+        border: 3px solid #d4af37;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(212, 175, 55, 0.4);
+    }
+
+    .edit-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .edit-header h2 {
+            font-family: 'Rock Salt', cursive;
+            color: #d4af37;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+        .form-group label {
+            display: block;
+            color: #d4af37;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(13, 13, 13, 0.8);
+        border: 2px solid #d4af37;
+        border-radius: 8px;
+        color: #f0f0f0;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background: rgba(13, 13, 13, 0.95);
+        }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #2196f3 0%, #64b5f6 100%);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+        margin-top: 10px;
+    }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #64b5f6 0%, #2196f3 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+        }
+
+    .btn-cancel {
+        width: 100%;
+        padding: 15px;
+        background: rgba(128, 128, 128, 0.2);
+        color: #999;
+        border: 2px solid #666;
+        border-radius: 8px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+    }
+
+        .btn-cancel:hover {
+            background: rgba(128, 128, 128, 0.3);
+            border-color: #999;
+            color: #ccc;
+        }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-container">
+    <div class="edit-header">
+        <h2>✏️ Edit Appointment ✏️</h2>
+        <p style="color: #b0b0b0;">Update appointment details</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="client_name">Client Name</label>
+            <input type="text" id="client_name" name="client_name" class="form-control" value="{{ appointment.client_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="form-control" value="{{ appointment.email }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" class="form-control" value="{{ appointment.phone }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tattoo_design">Tattoo Design</label>
+            <textarea id="tattoo_design" name="tattoo_design" class="form-control" required>{{ appointment.tattoo_design }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="appointment_date">Appointment Date & Time</label>
+            <input type="datetime-local" id="appointment_date" name="appointment_date" class="form-control" value="{{ appointment.appointment_date|date:'Y-m-d\TH:i' }}" required>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            💾 Save Changes
+        </button>
+
+        <a href="{% url 'appointments:list-fbv' %}" class="btn-cancel">
+            ❌ Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

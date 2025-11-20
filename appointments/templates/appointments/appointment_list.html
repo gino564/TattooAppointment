@@ -1,0 +1,334 @@
+﻿{% extends 'appointments/base.html' %}
+{% block title %}J'ink Tattoo Appointment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .view-indicator {
+        text-align: center;
+        padding: 20px;
+        margin-bottom: 30px;
+        background: linear-gradient(145deg, #d4af37, #b8941f);
+        color: #1a1a1a;
+        font-family: 'Permanent Marker', cursive;
+        font-size: 1.5em;
+        border-radius: 10px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5);
+    }
+
+    .appointments-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        padding: 20px 0;
+    }
+
+    .appointment-card {
+        background: linear-gradient(145deg, #2d2d2d, #1f1f1f);
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+        padding: 25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .appointment-card::before {
+            content: "🖤";
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 5em;
+            opacity: 0.1;
+            transform: rotate(15deg);
+        }
+
+        .appointment-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #ffd700;
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        }
+
+    /* Status Badge Styles */
+    .status-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1em;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .status-approved {
+        background: linear-gradient(145deg, #28a745, #20853a);
+        color: white;
+        border: 2px solid #1e7e34;
+    }
+
+    .status-rejected {
+        background: linear-gradient(145deg, #dc3545, #c82333);
+        color: white;
+        border: 2px solid #bd2130;
+    }
+
+    .status-pending {
+        background: linear-gradient(145deg, #ffa500, #ff8c00);
+        color: white;
+        border: 2px solid #ff7f00;
+    }
+
+    /* Card border color based on status */
+    .appointment-card.approved {
+        border-color: #28a745;
+    }
+
+    .appointment-card.rejected {
+        border-color: #dc3545;
+        opacity: 0.7;
+    }
+
+    .appointment-card.pending {
+        border-color: #ffa500;
+    }
+
+    .card-header {
+        border-bottom: 2px solid #d4af37;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+        margin-top: 10px; /* Space for status badge */
+    }
+
+    .client-name {
+        font-family: 'Rock Salt', cursive;
+        font-size: 1.8em;
+        color: #d4af37;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        margin-bottom: 5px;
+    }
+
+    .card-body {
+        line-height: 2;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        margin: 12px 0;
+        font-size: 1.1em;
+        color: #ccc;
+    }
+
+    .info-icon {
+        font-size: 1.3em;
+        margin-right: 12px;
+        min-width: 30px;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #999;
+        margin-right: 8px;
+        text-transform: uppercase;
+        font-size: 0.9em;
+        letter-spacing: 1px;
+    }
+
+    .info-value {
+        color: #e0e0e0;
+    }
+
+    .tattoo-design {
+        background: linear-gradient(145deg, #d4af37, #b8941f);
+        color: #1a1a1a;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+        font-family: 'Permanent Marker', cursive;
+        text-align: center;
+        font-size: 1.2em;
+        box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+    }
+
+        .tattoo-design::before {
+            content: "🎨 ";
+        }
+
+        .tattoo-design::after {
+            content: " 🎨";
+        }
+
+    .no-appointments {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+        font-size: 1.3em;
+    }
+
+        .no-appointments::before {
+            content: "💀";
+            display: block;
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+    .appointment-date {
+        background: rgba(212, 175, 55, 0.1);
+        padding: 10px;
+        border-radius: 5px;
+        border-left: 3px solid #d4af37;
+    }
+
+    /* Action Buttons */
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 12px 20px;
+        border: 2px solid;
+        border-radius: 8px;
+        text-decoration: none;
+        text-align: center;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-edit {
+        background: rgba(33, 150, 243, 0.1);
+        border-color: #2196f3;
+        color: #2196f3;
+    }
+
+        .btn-edit:hover {
+            background: #2196f3;
+            color: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+    .btn-delete {
+        background: rgba(244, 67, 54, 0.1);
+        border-color: #f44336;
+        color: #f44336;
+    }
+
+        .btn-delete:hover {
+            background: #f44336;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+        }
+
+    /* Rejected appointment styling */
+    .appointment-card.rejected .client-name {
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    .appointment-card.rejected .card-body {
+        opacity: 0.7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="view-indicator">
+    Current View: {{ view_type }}
+</div>
+
+{% if appointments %}
+<div class="appointments-container">
+    {% for appointment in appointments %}
+    <div class="appointment-card {{ appointment.status }}">
+
+        <!-- Status Badge at Top Right -->
+        {% if appointment.status == 'approved' %}
+        <div class="status-badge status-approved">
+            ✅ Approved
+        </div>
+        {% elif appointment.status == 'rejected' %}
+        <div class="status-badge status-rejected">
+            ❌ Rejected
+        </div>
+        {% else %}
+        <div class="status-badge status-pending">
+            ⏳ Pending Review
+        </div>
+        {% endif %}
+
+        <div class="card-header">
+            <div class="client-name">{{ appointment.client_name }}</div>
+        </div>
+
+        <div class="card-body">
+            <div class="info-row">
+                <span class="info-icon">📧</span>
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ appointment.email }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-icon">📱</span>
+                <span class="info-label">Phone:</span>
+                <span class="info-value">{{ appointment.phone }}</span>
+            </div>
+
+            <div class="info-row appointment-date">
+                <span class="info-icon">📅</span>
+                <span class="info-label">Appointment:</span>
+                <span class="info-value">{{ appointment.appointment_date|date:"M d, Y - g:i A" }}</span>
+            </div>
+
+            <div class="tattoo-design">
+                {{ appointment.tattoo_design }}
+            </div>
+
+            <div class="card-actions">
+                <a href="{% url 'appointments:edit' appointment.pk %}" class="btn-action btn-edit">
+                    ✏️ Edit
+                </a>
+                <a href="{% url 'appointments:delete' appointment.pk %}" class="btn-action btn-delete">
+                    🗑️ Delete
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-appointments">
+    No appointments scheduled yet. Time to get inked!
+</div>
+{% endif %}
+{% endblock %}

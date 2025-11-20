@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\appointments",
+    "\\appointments\\migrations",
+    "\\appointments\\migrations\\__pycache__",
+    "\\appointments\\templates",
+    "\\appointments\\templates\\appointments",
+    "\\media",
+    "\\media\\artist",
+    "\\media\\artist\\profile_pics",
+    "\\TattooAppointment"
+  ],
+  "SelectedNode": "\\appointments\\urls.py",
+  "PreviewInSolutionExplorer": false
+}
