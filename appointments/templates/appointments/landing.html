@@ -358,8 +358,10 @@
 
         /* Enquiry Form */
         .enquiry {
-            background: linear-gradient(135deg, #1a4d4d 0%, #0a2a2a 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
             padding: 80px 50px;
+            border-top: 3px solid #d4af37;
+            box-shadow: inset 0 5px 30px rgba(212, 175, 55, 0.1);
         }
 
         .enquiry-container {
@@ -373,6 +375,9 @@
             font-size: 2.5rem;
             margin-bottom: 20px;
             text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.3);
+            font-weight: bold;
+            letter-spacing: 3px;
         }
 
         .enquiry p {
@@ -397,17 +402,20 @@
             .form-group textarea {
                 width: 100%;
                 padding: 15px;
-                background: rgba(255, 255, 255, 0.1);
+                background: rgba(0, 0, 0, 0.5);
                 border: 2px solid #d4af37;
-                border-radius: 5px;
+                border-radius: 8px;
                 color: #fff;
                 font-size: 1rem;
+                transition: all 0.3s ease;
             }
 
                 .form-group input:focus,
                 .form-group textarea:focus {
                     outline: none;
-                    background: rgba(255, 255, 255, 0.15);
+                    background: rgba(0, 0, 0, 0.7);
+                    border-color: #ffd700;
+                    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
                 }
 
             .form-group textarea {
@@ -418,21 +426,23 @@
         .submit-btn {
             width: 100%;
             padding: 15px;
-            background: #d4af37;
+            background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
             color: #000;
-            border: none;
-            border-radius: 5px;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
         }
 
             .submit-btn:hover {
-                background: #fff;
-                transform: translateY(-2px);
-                box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5);
+                background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6);
+                border-color: #ffd700;
             }
 
         /* Messages */
@@ -565,7 +575,11 @@
             <li><a href="#artists">Artists</a></li>
             <li><a href="#studios">Studios</a></li>
             <li><a href="#reviews">Reviews</a></li>
-            <li><a href="{% url 'appointments:login' %}">Login</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'appointments:index' %}">Dashboard</a></li>
+            {% else %}
+                <li><a href="{% url 'appointments:login' %}">Login</a></li>
+            {% endif %}
         </ul>
     </nav>
 

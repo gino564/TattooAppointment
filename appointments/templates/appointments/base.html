@@ -134,10 +134,10 @@
     </header>
 
     <nav class="main-nav">
+        {% if user.is_authenticated %}
+        <a href="{% url 'appointments:index' %}">🏠 Dashboard</a>
         <a href="{% url 'appointments:list-fbv' %}">📋 FBV List</a>
         <a href="{% url 'appointments:list-cbv' %}">📋 CBV List</a>
-
-        {% if user.is_authenticated %}
         <span style="color: #d4af37; margin: 0 15px;">
             👤 {{ user.username }}
         </span>

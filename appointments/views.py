@@ -35,6 +35,20 @@ def enquiry_submit(request):
     if request.method == 'POST':
         form = EnquiryForm(request.POST)
         if form.is_valid():
+            # Check if user is authenticated
+            if not request.user.is_authenticated:
+                # Store form data in session for later submission
+                request.session['pending_enquiry'] = {
+                    'name': form.cleaned_data.get('name'),
+                    'email': form.cleaned_data.get('email'),
+                    'phone': form.cleaned_data.get('phone'),
+                    'message': form.cleaned_data.get('message'),
+                    'preferred_date': form.cleaned_data.get('preferred_date').isoformat() if form.cleaned_data.get('preferred_date') else None,
+                }
+                messages.info(request, '🔑 Please login or register to submit your tattoo enquiry.')
+                return redirect('appointments:login')
+
+            # User is authenticated, save the enquiry
             form.save()
             messages.success(request, '✨ Thank you for your enquiry! We\'ll get back to you within 24 hours. 💀')
             return redirect('appointments:landing')
@@ -52,7 +66,7 @@ def login_view(request):
     """User login view"""
     if request.user.is_authenticated:
         return redirect('appointments:index')
-    
+
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
@@ -61,8 +75,27 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f'Welcome back, {username}! 💀')
-                
+
+                # Check if there's a pending enquiry in session
+                if 'pending_enquiry' in request.session:
+                    from datetime import date
+                    enquiry_data = request.session['pending_enquiry']
+
+                    # Convert date string back to date object if present
+                    if enquiry_data.get('preferred_date'):
+                        enquiry_data['preferred_date'] = date.fromisoformat(enquiry_data['preferred_date'])
+
+                    # Create and save the enquiry
+                    Enquiry.objects.create(**enquiry_data)
+
+                    # Clear the session data
+                    del request.session['pending_enquiry']
+
+                    messages.success(request, f'Welcome back, {username}! Your tattoo enquiry has been submitted successfully. 💀')
+                    return redirect('appointments:landing')
+                else:
+                    messages.success(request, f'Welcome back, {username}! 💀')
+
                 # Redirect to 'next' parameter or default to index page
                 next_url = request.GET.get('next', 'appointments:index')
                 return redirect(next_url)
@@ -72,26 +105,48 @@ def login_view(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = LoginForm()
-    
+
     return render(request, 'appointments/login.html', {'form': form})
 
 def register_view(request):
     """User registration view"""
     if request.user.is_authenticated:
         return redirect('appointments:index')
-    
+
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}! You can now log in.')
-            return redirect('appointments:landing')
+
+            # Auto-login the user after registration
+            login(request, user)
+
+            # Check if there's a pending enquiry in session
+            if 'pending_enquiry' in request.session:
+                from datetime import date
+                enquiry_data = request.session['pending_enquiry']
+
+                # Convert date string back to date object if present
+                if enquiry_data.get('preferred_date'):
+                    enquiry_data['preferred_date'] = date.fromisoformat(enquiry_data['preferred_date'])
+
+                # Create and save the enquiry
+                Enquiry.objects.create(**enquiry_data)
+
+                # Clear the session data
+                del request.session['pending_enquiry']
+
+                messages.success(request, f'Welcome, {username}! Your account has been created and your tattoo enquiry has been submitted successfully. 💀')
+                return redirect('appointments:landing')
+            else:
+                messages.success(request, f'Account created for {username}! Welcome to J\'INK Studio. 💀')
+                return redirect('appointments:index')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
         form = RegisterForm()
-    
+
     return render(request, 'appointments/register.html', {'form': form})
 
 def logout_view(request):
