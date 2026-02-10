@@ -1,0 +1,501 @@
+{% extends 'appointments/base.html' %}
+
+{% block title %}Book a Session - J'ink Studio{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    .booking-page {
+        background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+        background-attachment: fixed;
+        min-height: calc(100vh - 80px);
+        padding: 40px 20px;
+        margin: -60px calc(-50vw + 50%);
+        width: 100vw;
+    }
+
+    .booking-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .booking-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+        .booking-header h2 {
+            font-family: 'Permanent Marker', cursive;
+            color: #d4af37;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .booking-header p {
+            color: #b0b0b0;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+
+    /* Gallery Section */
+    .section-title {
+        font-family: 'Bebas Neue', sans-serif;
+        color: #d4af37;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 15px;
+        margin-bottom: 35px;
+    }
+
+    .gallery-card {
+        position: relative;
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .gallery-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(212, 175, 55, 0.6);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15);
+        }
+
+        .gallery-card.selected {
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .gallery-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #d4af37;
+            color: #0a0a0a;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+    .gallery-card-img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .gallery-card-placeholder {
+        width: 100%;
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(212, 175, 55, 0.05);
+        font-size: 2.5rem;
+    }
+
+    .gallery-card-name {
+        padding: 10px 12px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 0.95rem;
+        color: #e0e0e0;
+        letter-spacing: 1px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .no-styles-msg {
+        text-align: center;
+        color: #888;
+        font-family: 'Inter', sans-serif;
+        padding: 30px;
+        background: rgba(20, 20, 20, 0.6);
+        border-radius: 12px;
+        border: 1px dashed rgba(212, 175, 55, 0.3);
+        margin-bottom: 35px;
+    }
+
+    /* Upload Dropzone */
+    .dropzone {
+        border: 2px dashed rgba(212, 175, 55, 0.4);
+        border-radius: 12px;
+        padding: 40px 20px;
+        text-align: center;
+        margin-bottom: 35px;
+        background: rgba(20, 20, 20, 0.6);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .dropzone:hover,
+        .dropzone.dragover {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+    .dropzone-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .dropzone-text {
+        font-family: 'Inter', sans-serif;
+        color: #b0b0b0;
+        font-size: 0.95rem;
+        margin-bottom: 5px;
+    }
+
+    .dropzone-hint {
+        font-family: 'Inter', sans-serif;
+        color: #666;
+        font-size: 0.8rem;
+    }
+
+    .dropzone-file-input {
+        display: none;
+    }
+
+    .file-preview {
+        display: none;
+        margin-top: 15px;
+        padding: 10px;
+        background: rgba(40, 167, 69, 0.1);
+        border-radius: 8px;
+        border: 1px solid rgba(40, 167, 69, 0.3);
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+        color: #81c784;
+    }
+
+    /* Form Section */
+    .booking-form {
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 15px;
+        padding: 35px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            color: #d4af37;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(13, 13, 13, 0.8);
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        border-radius: 8px;
+        color: #f0f0f0;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background: rgba(13, 13, 13, 0.95);
+        }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+    select.form-control {
+        cursor: pointer;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+    }
+
+        .errorlist li {
+            color: #ff4444;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            background: rgba(255, 68, 68, 0.1);
+            border-left: 3px solid #ff4444;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #0d0d0d;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        margin-top: 10px;
+    }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+    .btn-back {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 25px;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        border-radius: 8px;
+        text-decoration: none;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        color: #b0b0b0;
+        background: rgba(20, 20, 20, 0.6);
+        text-align: center;
+        width: 100%;
+    }
+
+        .btn-back:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+
+    .messages {
+        max-width: 500px;
+        margin: 0 auto 20px auto;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 4px solid;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
+    }
+
+    .alert-error {
+        background: rgba(244, 67, 54, 0.15);
+        border-color: #f44336;
+        color: #e57373;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        .gallery-grid {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="booking-page">
+    <div class="booking-container">
+        <div class="booking-header">
+            <h2>Book a Session</h2>
+            <p>Choose a style, upload your design, and schedule your appointment.</p>
+        </div>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" id="bookingForm">
+            {% csrf_token %}
+            <input type="hidden" name="gallery_style_id" id="galleryStyleId" value="">
+
+            <!-- Gallery Picker -->
+            <h3 class="section-title">Choose a Style</h3>
+            {% if styles %}
+            <div class="gallery-grid">
+                {% for style in styles %}
+                <div class="gallery-card" data-style-id="{{ style.pk }}" onclick="selectStyle(this, {{ style.pk }})">
+                    {% if style.image %}
+                    <img src="{{ style.image.url }}" alt="{{ style.name }}" class="gallery-card-img">
+                    {% elif style.image_url %}
+                    <img src="{{ style.image_url }}" alt="{{ style.name }}" class="gallery-card-img">
+                    {% else %}
+                    <div class="gallery-card-placeholder">🎨</div>
+                    {% endif %}
+                    <div class="gallery-card-name">{{ style.name }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-styles-msg">No styles available at the moment. You can still describe your design below.</div>
+            {% endif %}
+
+            <!-- Upload Dropzone -->
+            <h3 class="section-title">Upload Your Design</h3>
+            <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+                <div class="dropzone-icon">📁</div>
+                <p class="dropzone-text">Click or drag & drop your reference image here</p>
+                <p class="dropzone-hint">Supports JPG, PNG, WEBP (Max 10MB)</p>
+                <input type="file" name="reference_image" id="fileInput" class="dropzone-file-input" accept="image/*">
+                <div class="file-preview" id="filePreview"></div>
+            </div>
+
+            <!-- Booking Form -->
+            <div class="booking-form">
+                <h3 class="section-title">Your Details</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.client_name.id_for_label }}">Full Name *</label>
+                        {{ form.client_name }}
+                        {{ form.client_name.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">Email *</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">Phone *</label>
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.body_placement.id_for_label }}">Body Placement</label>
+                        {{ form.body_placement }}
+                        {{ form.body_placement.errors }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.preferred_artist.id_for_label }}">Preferred Artist</label>
+                        {{ form.preferred_artist }}
+                        {{ form.preferred_artist.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.appointment_date.id_for_label }}">Preferred Date *</label>
+                        {{ form.appointment_date }}
+                        {{ form.appointment_date.errors }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.tattoo_design.id_for_label }}">Describe Your Tattoo *</label>
+                    {{ form.tattoo_design }}
+                    {{ form.tattoo_design.errors }}
+                </div>
+
+                <button type="submit" class="btn-submit">Book My Session</button>
+                <a href="{% url 'appointments:index' %}" class="btn-back">Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Gallery style selection
+    function selectStyle(card, styleId) {
+        document.querySelectorAll('.gallery-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        document.getElementById('galleryStyleId').value = styleId;
+    }
+
+    // Dropzone functionality
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const filePreview = document.getElementById('filePreview');
+
+    ['dragenter', 'dragover'].forEach(event => {
+        dropzone.addEventListener(event, (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(event => {
+        dropzone.addEventListener(event, (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+        });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            showPreview(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            showPreview(fileInput.files[0]);
+        }
+    });
+
+    function showPreview(file) {
+        filePreview.style.display = 'block';
+        filePreview.textContent = '✓ Selected: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+    }
+</script>
+{% endblock %}

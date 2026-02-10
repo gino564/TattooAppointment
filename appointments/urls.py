@@ -21,4 +21,13 @@ urlpatterns = [
     # Edit and Delete URLs
     path('appointments/edit/<int:pk>/', views.appointment_edit, name='edit'),
     path('appointments/delete/<int:pk>/', views.appointment_delete, name='delete'),
+
+    # Client booking
+    path('book/', views.book_session, name='book_session'),
+
+    # Admin panel URLs (staff only)
+    path('admin-panel/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin-panel/approve/<int:pk>/', views.admin_approve, name='admin_approve'),
+    path('admin-panel/reject/<int:pk>/', views.admin_reject, name='admin_reject'),
+    path('admin-panel/detail/<int:pk>/', views.admin_appointment_detail, name='admin_detail'),
 ]

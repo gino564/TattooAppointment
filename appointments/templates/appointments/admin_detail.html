@@ -1,0 +1,429 @@
+{% extends 'appointments/base.html' %}
+
+{% block title %}Appointment Detail - J'ink Studio{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    .detail-page {
+        background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+        background-attachment: fixed;
+        min-height: calc(100vh - 80px);
+        padding: 40px 20px;
+        margin: -60px calc(-50vw + 50%);
+        width: 100vw;
+    }
+
+    .detail-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .detail-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .detail-header h2 {
+            font-family: 'Permanent Marker', cursive;
+            color: #d4af37;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .detail-header p {
+            color: #b0b0b0;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+
+    .detail-card {
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 15px;
+        padding: 35px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .status-badge-lg {
+        display: inline-block;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 25px;
+    }
+
+    .status-approved-lg {
+        background: rgba(40, 167, 69, 0.15);
+        color: #5cb85c;
+        border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .status-rejected-lg {
+        background: rgba(220, 53, 69, 0.15);
+        color: #e57373;
+        border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+
+    .status-pending-lg {
+        background: rgba(255, 165, 0, 0.15);
+        color: #ffb74d;
+        border: 1px solid rgba(255, 165, 0, 0.3);
+    }
+
+    .detail-section {
+        margin-bottom: 25px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .detail-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .section-label {
+        font-family: 'Bebas Neue', sans-serif;
+        color: #d4af37;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        margin: 12px 0;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #888;
+        min-width: 140px;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        padding-top: 2px;
+    }
+
+    .detail-value {
+        color: #e0e0e0;
+        flex: 1;
+    }
+
+    .design-text {
+        background: rgba(255, 255, 255, 0.04);
+        color: #ccc;
+        padding: 15px 18px;
+        border-radius: 10px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        border-left: 3px solid rgba(212, 175, 55, 0.4);
+        line-height: 1.6;
+    }
+
+    .reference-image {
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 10px;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        margin-top: 10px;
+    }
+
+    .rejection-reason-box {
+        background: rgba(220, 53, 69, 0.08);
+        color: #e57373;
+        padding: 15px 18px;
+        border-radius: 10px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        border-left: 3px solid rgba(220, 53, 69, 0.4);
+        line-height: 1.6;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 12px 20px;
+        border: 2px solid;
+        border-radius: 8px;
+        text-decoration: none;
+        text-align: center;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        min-width: 150px;
+    }
+
+    .btn-approve-lg {
+        background: rgba(40, 167, 69, 0.08);
+        border-color: rgba(40, 167, 69, 0.4);
+        color: #5cb85c;
+    }
+
+        .btn-approve-lg:hover {
+            background: #28a745;
+            border-color: #28a745;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    .btn-back-action {
+        background: rgba(20, 20, 20, 0.6);
+        border-color: rgba(212, 175, 55, 0.5);
+        color: #b0b0b0;
+    }
+
+        .btn-back-action:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+            transform: translateY(-2px);
+        }
+
+    /* Rejection Form */
+    .reject-section {
+        margin-top: 30px;
+        background: rgba(220, 53, 69, 0.05);
+        border: 1px solid rgba(220, 53, 69, 0.2);
+        border-radius: 12px;
+        padding: 25px;
+    }
+
+    .reject-section .section-label {
+        color: #e57373;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(13, 13, 13, 0.8);
+        border: 2px solid rgba(220, 53, 69, 0.3);
+        border-radius: 8px;
+        color: #f0f0f0;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        resize: vertical;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #dc3545;
+            box-shadow: 0 0 15px rgba(220, 53, 69, 0.2);
+        }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+    .btn-reject-submit {
+        padding: 12px 30px;
+        background: rgba(220, 53, 69, 0.15);
+        border: 2px solid rgba(220, 53, 69, 0.4);
+        color: #e57373;
+        border-radius: 8px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+    }
+
+        .btn-reject-submit:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    .messages {
+        max-width: 500px;
+        margin: 0 auto 20px auto;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 4px solid;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
+    }
+
+    .alert-success {
+        background: rgba(76, 175, 80, 0.15);
+        border-color: #4caf50;
+        color: #81c784;
+    }
+
+    .alert-error {
+        background: rgba(244, 67, 54, 0.15);
+        border-color: #f44336;
+        color: #e57373;
+    }
+
+    @media (max-width: 768px) {
+        .detail-row {
+            flex-direction: column;
+        }
+        .detail-label {
+            min-width: unset;
+            margin-bottom: 5px;
+        }
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-page">
+    <div class="detail-container">
+        <div class="detail-header">
+            <h2>Appointment Detail</h2>
+            <p>Review and manage this appointment request.</p>
+        </div>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="detail-card">
+            {% if appointment.status == 'approved' %}
+            <span class="status-badge-lg status-approved-lg">Approved</span>
+            {% elif appointment.status == 'rejected' %}
+            <span class="status-badge-lg status-rejected-lg">Rejected</span>
+            {% else %}
+            <span class="status-badge-lg status-pending-lg">Pending Review</span>
+            {% endif %}
+
+            <!-- Client Info -->
+            <div class="detail-section">
+                <div class="section-label">Client Information</div>
+                <div class="detail-row">
+                    <span class="detail-label">Name</span>
+                    <span class="detail-value">{{ appointment.client_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">{{ appointment.email }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value">{{ appointment.phone }}</span>
+                </div>
+                {% if appointment.user %}
+                <div class="detail-row">
+                    <span class="detail-label">Account</span>
+                    <span class="detail-value">{{ appointment.user.username }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Appointment Info -->
+            <div class="detail-section">
+                <div class="section-label">Appointment Details</div>
+                <div class="detail-row">
+                    <span class="detail-label">Date</span>
+                    <span class="detail-value">{{ appointment.appointment_date|date:"F d, Y - g:i A" }}</span>
+                </div>
+                {% if appointment.body_placement %}
+                <div class="detail-row">
+                    <span class="detail-label">Placement</span>
+                    <span class="detail-value">{{ appointment.body_placement }}</span>
+                </div>
+                {% endif %}
+                {% if appointment.selected_style %}
+                <div class="detail-row">
+                    <span class="detail-label">Style</span>
+                    <span class="detail-value">{{ appointment.selected_style.name }}</span>
+                </div>
+                {% endif %}
+                {% if appointment.preferred_artist %}
+                <div class="detail-row">
+                    <span class="detail-label">Artist</span>
+                    <span class="detail-value">{{ appointment.preferred_artist.name }}</span>
+                </div>
+                {% endif %}
+                <div class="detail-row">
+                    <span class="detail-label">Submitted</span>
+                    <span class="detail-value">{{ appointment.created_at|date:"F d, Y - g:i A" }}</span>
+                </div>
+            </div>
+
+            <!-- Design Description -->
+            <div class="detail-section">
+                <div class="section-label">Tattoo Design</div>
+                <div class="design-text">{{ appointment.tattoo_design }}</div>
+            </div>
+
+            <!-- Reference Image -->
+            {% if appointment.reference_image %}
+            <div class="detail-section">
+                <div class="section-label">Reference Image</div>
+                <img src="{{ appointment.reference_image.url }}" alt="Reference Design" class="reference-image">
+            </div>
+            {% endif %}
+
+            <!-- Rejection Reason (if rejected) -->
+            {% if appointment.rejection_reason %}
+            <div class="detail-section">
+                <div class="section-label" style="color: #e57373;">Rejection Reason</div>
+                <div class="rejection-reason-box">{{ appointment.rejection_reason }}</div>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="{% url 'appointments:admin_dashboard' %}" class="btn-action btn-back-action">Back to Queue</a>
+                {% if appointment.status != 'approved' %}
+                <a href="{% url 'appointments:admin_approve' appointment.pk %}" class="btn-action btn-approve-lg">Approve</a>
+                {% endif %}
+            </div>
+
+            <!-- Rejection Form -->
+            {% if appointment.status != 'rejected' %}
+            <div class="reject-section">
+                <div class="section-label">Reject This Appointment</div>
+                <form method="POST" action="{% url 'appointments:admin_reject' appointment.pk %}">
+                    {% csrf_token %}
+                    {{ rejection_form.reason }}
+                    <button type="submit" class="btn-reject-submit">Submit Rejection</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

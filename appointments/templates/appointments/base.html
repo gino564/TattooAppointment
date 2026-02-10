@@ -163,6 +163,9 @@
                 <li><a href="{% url 'appointments:landing' %}#enquiry">ENQUIRY</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'appointments:index' %}">DASHBOARD</a></li>
+                    {% if user.is_staff %}
+                    <li><a href="{% url 'appointments:admin_dashboard' %}">ADMIN PANEL</a></li>
+                    {% endif %}
                 {% endif %}
             </ul>
 

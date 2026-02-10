@@ -1,11 +1,11 @@
 {% extends 'appointments/base.html' %}
 
-{% block title %}My Appointments - J'ink Studio{% endblock %}
+{% block title %}Admin Panel - J'ink Studio{% endblock %}
 
 {% block extra_css %}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    .dashboard-page {
+    .admin-page {
         background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
         background-attachment: fixed;
         min-height: calc(100vh - 80px);
@@ -14,17 +14,17 @@
         width: 100vw;
     }
 
-    .dashboard-container {
+    .admin-container {
         max-width: 1100px;
         margin: 0 auto;
     }
 
-    .dashboard-header {
+    .admin-header {
         text-align: center;
         margin-bottom: 15px;
     }
 
-        .dashboard-header h2 {
+        .admin-header h2 {
             font-family: 'Permanent Marker', cursive;
             color: #d4af37;
             font-size: 2.5rem;
@@ -34,47 +34,28 @@
             margin-bottom: 10px;
         }
 
-        .dashboard-header p {
+        .admin-header p {
             color: #b0b0b0;
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
         }
 
-    .dashboard-actions {
+    /* Status Filter Tabs */
+    .filter-tabs {
         display: flex;
         justify-content: center;
-        gap: 15px;
-        margin-bottom: 50px;
+        gap: 10px;
+        margin-bottom: 40px;
         flex-wrap: wrap;
     }
 
-    .btn-primary-action {
-        padding: 12px 30px;
-        border: none;
-        border-radius: 8px;
+    .filter-tab {
+        padding: 10px 22px;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        border-radius: 25px;
         text-decoration: none;
         font-family: 'Bebas Neue', sans-serif;
-        font-size: 1.1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s ease;
-        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
-        color: #0a0a0a;
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    }
-
-        .btn-primary-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
-        }
-
-    .btn-secondary-action {
-        padding: 12px 30px;
-        border: 2px solid rgba(212, 175, 55, 0.5);
-        border-radius: 8px;
-        text-decoration: none;
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 1.1rem;
+        font-size: 1rem;
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: all 0.3s ease;
@@ -82,12 +63,31 @@
         background: rgba(20, 20, 20, 0.6);
     }
 
-        .btn-secondary-action:hover {
+        .filter-tab:hover {
             border-color: #d4af37;
             color: #d4af37;
-            transform: translateY(-2px);
         }
 
+        .filter-tab.active {
+            background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+            color: #0a0a0a;
+            border-color: #d4af37;
+        }
+
+    .filter-count {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 1px 8px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        margin-left: 5px;
+    }
+
+    .filter-tab.active .filter-count {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Appointment Cards */
     .appointments-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -208,6 +208,18 @@
         line-height: 1.5;
     }
 
+    .rejection-reason {
+        background: rgba(220, 53, 69, 0.08);
+        color: #e57373;
+        padding: 12px 14px;
+        border-radius: 8px;
+        margin-top: 14px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+        border-left: 3px solid rgba(220, 53, 69, 0.4);
+        line-height: 1.5;
+    }
+
     .card-actions {
         display: flex;
         gap: 10px;
@@ -228,30 +240,44 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: all 0.3s ease;
+        cursor: pointer;
     }
 
-    .btn-edit {
+    .btn-approve {
+        background: rgba(40, 167, 69, 0.08);
+        border-color: rgba(40, 167, 69, 0.4);
+        color: #5cb85c;
+    }
+
+        .btn-approve:hover {
+            background: #28a745;
+            border-color: #28a745;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    .btn-reject {
+        background: rgba(220, 53, 69, 0.08);
+        border-color: rgba(220, 53, 69, 0.4);
+        color: #e57373;
+    }
+
+        .btn-reject:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    .btn-detail {
         background: rgba(33, 150, 243, 0.08);
         border-color: rgba(33, 150, 243, 0.4);
         color: #64b5f6;
     }
 
-        .btn-edit:hover {
+        .btn-detail:hover {
             background: #2196f3;
             border-color: #2196f3;
-            color: #fff;
-            transform: translateY(-2px);
-        }
-
-    .btn-delete {
-        background: rgba(244, 67, 54, 0.08);
-        border-color: rgba(244, 67, 54, 0.4);
-        color: #e57373;
-    }
-
-        .btn-delete:hover {
-            background: #f44336;
-            border-color: #f44336;
             color: #fff;
             transform: translateY(-2px);
         }
@@ -275,7 +301,6 @@
             color: #888;
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
-            margin-bottom: 25px;
         }
 
     .messages {
@@ -304,35 +329,23 @@
         color: #e57373;
     }
 
-    .alert-info {
-        background: rgba(33, 150, 243, 0.15);
-        border-color: #2196f3;
-        color: #64b5f6;
-    }
-
-    .appointment-card.rejected .client-name {
-        text-decoration: line-through;
-        opacity: 0.6;
-    }
-
-    .appointment-card.rejected .card-body {
-        opacity: 0.7;
-    }
-
     @media (max-width: 768px) {
         .appointments-grid {
             grid-template-columns: 1fr;
+        }
+        .filter-tabs {
+            gap: 8px;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-page">
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <h2>My Appointments</h2>
-            <p>Hello, {{ user.username }}! Here are your scheduled sessions.</p>
+<div class="admin-page">
+    <div class="admin-container">
+        <div class="admin-header">
+            <h2>Admin Panel</h2>
+            <p>Manage all appointment requests. Approve or reject bookings.</p>
         </div>
 
         {% if messages %}
@@ -345,10 +358,19 @@
         </div>
         {% endif %}
 
-        <div class="dashboard-actions">
-            <a href="{% url 'appointments:book_session' %}" class="btn-primary-action">Book a Session</a>
-            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-secondary-action">New Enquiry</a>
-            <a href="{% url 'appointments:landing' %}" class="btn-secondary-action">Back to Home</a>
+        <div class="filter-tabs">
+            <a href="?status=all" class="filter-tab {% if current_filter == 'all' %}active{% endif %}">
+                All <span class="filter-count">{{ counts.all }}</span>
+            </a>
+            <a href="?status=pending" class="filter-tab {% if current_filter == 'pending' %}active{% endif %}">
+                Pending <span class="filter-count">{{ counts.pending }}</span>
+            </a>
+            <a href="?status=approved" class="filter-tab {% if current_filter == 'approved' %}active{% endif %}">
+                Approved <span class="filter-count">{{ counts.approved }}</span>
+            </a>
+            <a href="?status=rejected" class="filter-tab {% if current_filter == 'rejected' %}active{% endif %}">
+                Rejected <span class="filter-count">{{ counts.rejected }}</span>
+            </a>
         </div>
 
         {% if appointments %}
@@ -386,13 +408,48 @@
                         <span class="info-value">{{ appointment.appointment_date|date:"M d, Y - g:i A" }}</span>
                     </div>
 
+                    {% if appointment.body_placement %}
+                    <div class="info-row">
+                        <span class="info-icon">📍</span>
+                        <span class="info-label">Placement:</span>
+                        <span class="info-value">{{ appointment.body_placement }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if appointment.preferred_artist %}
+                    <div class="info-row">
+                        <span class="info-icon">🎨</span>
+                        <span class="info-label">Artist:</span>
+                        <span class="info-value">{{ appointment.preferred_artist.name }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if appointment.selected_style %}
+                    <div class="info-row">
+                        <span class="info-icon">✨</span>
+                        <span class="info-label">Style:</span>
+                        <span class="info-value">{{ appointment.selected_style.name }}</span>
+                    </div>
+                    {% endif %}
+
                     <div class="tattoo-design">
                         {{ appointment.tattoo_design }}
                     </div>
 
+                    {% if appointment.rejection_reason %}
+                    <div class="rejection-reason">
+                        <strong>Rejection Reason:</strong> {{ appointment.rejection_reason }}
+                    </div>
+                    {% endif %}
+
                     <div class="card-actions">
-                        <a href="{% url 'appointments:edit' appointment.pk %}" class="btn-card btn-edit">Edit</a>
-                        <a href="{% url 'appointments:delete' appointment.pk %}" class="btn-card btn-delete">Delete</a>
+                        <a href="{% url 'appointments:admin_detail' appointment.pk %}" class="btn-card btn-detail">View</a>
+                        {% if appointment.status != 'approved' %}
+                        <a href="{% url 'appointments:admin_approve' appointment.pk %}" class="btn-card btn-approve">Approve</a>
+                        {% endif %}
+                        {% if appointment.status != 'rejected' %}
+                        <a href="{% url 'appointments:admin_detail' appointment.pk %}" class="btn-card btn-reject">Reject</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -400,9 +457,8 @@
         </div>
         {% else %}
         <div class="no-appointments">
-            <h3>No Appointments Yet</h3>
-            <p>You haven't booked any sessions. Submit an enquiry to get started!</p>
-            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-primary-action">Make an Enquiry</a>
+            <h3>No Appointments Found</h3>
+            <p>There are no appointments matching this filter.</p>
         </div>
         {% endif %}
     </div>

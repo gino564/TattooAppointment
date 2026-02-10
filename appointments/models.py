@@ -13,6 +13,10 @@ class Appointment(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     tattoo_design = models.TextField()
+    reference_image = models.ImageField(upload_to='appointments/designs/', blank=True, null=True)
+    selected_style = models.ForeignKey('TattooStyle', on_delete=models.SET_NULL, null=True, blank=True)
+    preferred_artist = models.ForeignKey('Artist', on_delete=models.SET_NULL, null=True, blank=True)
+    body_placement = models.CharField(max_length=100, blank=True)
     appointment_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
@@ -21,6 +25,7 @@ class Appointment(models.Model):
         default='pending',
         help_text='Appointment approval status'
     )
+    rejection_reason = models.TextField(blank=True, help_text='Reason for rejection (if rejected)')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self):

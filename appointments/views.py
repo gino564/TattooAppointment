@@ -1,10 +1,10 @@
-﻿from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, LoginForm, EnquiryForm
+from .forms import RegisterForm, LoginForm, EnquiryForm, AppointmentBookingForm, RejectionForm
 from django.views.generic import ListView
 from .models import Appointment, TattooStyle, Artist, Studio, Review, Enquiry
 
@@ -20,7 +20,7 @@ def landing_page(request):
     artists = Artist.objects.filter(is_active=True)[:8]
     studios = Studio.objects.filter(is_active=True)[:2]
     reviews = Review.objects.filter(is_approved=True, is_featured=True)[:4]
-    
+
     context = {
         'styles': styles,
         'artists': artists,
@@ -45,12 +45,12 @@ def enquiry_submit(request):
                     'message': form.cleaned_data.get('message'),
                     'preferred_date': form.cleaned_data.get('preferred_date').isoformat() if form.cleaned_data.get('preferred_date') else None,
                 }
-                messages.info(request, '🔑 Please login or register to submit your tattoo enquiry.')
+                messages.info(request, 'Please login or register to submit your tattoo enquiry.')
                 return redirect('appointments:login')
 
             # User is authenticated, save the enquiry
             form.save()
-            messages.success(request, '✨ Thank you for your enquiry! We\'ll get back to you within 24 hours. 💀')
+            messages.success(request, 'Thank you for your enquiry! We\'ll get back to you within 24 hours.')
             return redirect('appointments:landing')
         else:
             messages.error(request, 'Please correct the errors in the form.')
@@ -59,12 +59,14 @@ def enquiry_submit(request):
 
 
 # ============================================
-# AUTHENTICATION VIEWS (Login appears first)
+# AUTHENTICATION VIEWS
 # ============================================
 
 def login_view(request):
-    """User login view"""
+    """User login view - redirects admin to admin dashboard, client to client dashboard"""
     if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('appointments:admin_dashboard')
         return redirect('appointments:index')
 
     if request.method == 'POST':
@@ -91,12 +93,14 @@ def login_view(request):
                     # Clear the session data
                     del request.session['pending_enquiry']
 
-                    messages.success(request, f'Welcome back, {username}! Your tattoo enquiry has been submitted successfully. 💀')
+                    messages.success(request, f'Welcome back, {username}! Your tattoo enquiry has been submitted successfully.')
                     return redirect('appointments:landing')
                 else:
-                    messages.success(request, f'Welcome back, {username}! 💀')
+                    messages.success(request, f'Welcome back, {username}!')
 
-                # Redirect to 'next' parameter or default to index page
+                # Role-based redirect
+                if user.is_staff:
+                    return redirect('appointments:admin_dashboard')
                 next_url = request.GET.get('next', 'appointments:index')
                 return redirect(next_url)
             else:
@@ -137,10 +141,10 @@ def register_view(request):
                 # Clear the session data
                 del request.session['pending_enquiry']
 
-                messages.success(request, f'Welcome, {username}! Your account has been created and your tattoo enquiry has been submitted successfully. 💀')
+                messages.success(request, f'Welcome, {username}! Your account has been created and your tattoo enquiry has been submitted successfully.')
                 return redirect('appointments:landing')
             else:
-                messages.success(request, f'Account created for {username}! Welcome to J\'INK Studio. 💀')
+                messages.success(request, f'Account created for {username}! Welcome to J\'INK Studio.')
                 return redirect('appointments:index')
         else:
             messages.error(request, 'Please correct the errors below.')
@@ -156,13 +160,53 @@ def logout_view(request):
     return redirect('appointments:login')
 
 # ============================================
-# PROTECTED VIEWS (Require login)
+# CLIENT VIEWS (Require login)
 # ============================================
 
 @login_required(login_url='appointments:login')
 def index(request):
+    """Client dashboard - shows user's appointments"""
     appointments = Appointment.objects.filter(user=request.user)
     return render(request, 'appointments/index.html', {'appointments': appointments})
+
+@login_required(login_url='appointments:login')
+def book_session(request):
+    """Client booking page with gallery picker and custom upload"""
+    styles = TattooStyle.objects.filter(is_active=True)
+    artists = Artist.objects.filter(is_active=True)
+
+    if request.method == 'POST':
+        form = AppointmentBookingForm(request.POST, request.FILES)
+        if form.is_valid():
+            appointment = form.save(commit=False)
+            appointment.user = request.user
+            appointment.status = 'pending'
+
+            # Handle selected style from gallery click (hidden input)
+            style_id = request.POST.get('gallery_style_id')
+            if style_id:
+                try:
+                    appointment.selected_style = TattooStyle.objects.get(pk=style_id)
+                except TattooStyle.DoesNotExist:
+                    pass
+
+            appointment.save()
+            messages.success(request, 'Your session has been booked! We\'ll review it shortly.')
+            return redirect('appointments:index')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        # Pre-fill client info from user profile
+        form = AppointmentBookingForm(initial={
+            'client_name': f'{request.user.first_name} {request.user.last_name}'.strip() or request.user.username,
+            'email': request.user.email,
+        })
+
+    return render(request, 'appointments/book_session.html', {
+        'form': form,
+        'styles': styles,
+        'artists': artists,
+    })
 
 @login_required(login_url='appointments:login')
 def appointment_list_fbv(request):
@@ -180,7 +224,7 @@ class AppointmentListCBV(LoginRequiredMixin, ListView):
     model = Appointment
     template_name = 'appointments/appointment_list.html'
     context_object_name = 'appointments'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_type'] = 'Class-Based View (CBV)'
@@ -194,7 +238,7 @@ class AppointmentListCBV(LoginRequiredMixin, ListView):
 def appointment_edit(request, pk):
     """Edit an appointment"""
     appointment = get_object_or_404(Appointment, pk=pk)
-    
+
     if request.method == 'POST':
         appointment.client_name = request.POST.get('client_name')
         appointment.email = request.POST.get('email')
@@ -202,21 +246,92 @@ def appointment_edit(request, pk):
         appointment.tattoo_design = request.POST.get('tattoo_design')
         appointment.appointment_date = request.POST.get('appointment_date')
         appointment.save()
-        
-        messages.success(request, f'Appointment for {appointment.client_name} updated successfully! 💀')
-        return redirect('appointments:list-fbv')
-    
+
+        messages.success(request, f'Appointment for {appointment.client_name} updated successfully!')
+        return redirect('appointments:index')
+
     return render(request, 'appointments/edit.html', {'appointment': appointment})
 
 @login_required(login_url='appointments:login')
 def appointment_delete(request, pk):
     """Delete an appointment"""
     appointment = get_object_or_404(Appointment, pk=pk)
-    
+
     if request.method == 'POST':
         client_name = appointment.client_name
         appointment.delete()
-        messages.success(request, f'Appointment for {client_name} has been deleted. 💀')
-        return redirect('appointments:list-fbv')
-    
+        messages.success(request, f'Appointment for {client_name} has been deleted.')
+        return redirect('appointments:index')
+
     return render(request, 'appointments/delete_confirm.html', {'appointment': appointment})
+
+
+# ============================================
+# ADMIN VIEWS (Require staff)
+# ============================================
+
+def staff_required(view_func):
+    """Decorator that requires user to be staff"""
+    @login_required(login_url='appointments:login')
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_staff:
+            messages.error(request, 'You do not have permission to access this page.')
+            return redirect('appointments:index')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@staff_required
+def admin_dashboard(request):
+    """Admin dashboard - shows all appointments queue"""
+    status_filter = request.GET.get('status', 'all')
+    if status_filter == 'all':
+        appointments = Appointment.objects.all()
+    else:
+        appointments = Appointment.objects.filter(status=status_filter)
+
+    counts = {
+        'all': Appointment.objects.count(),
+        'pending': Appointment.objects.filter(status='pending').count(),
+        'approved': Appointment.objects.filter(status='approved').count(),
+        'rejected': Appointment.objects.filter(status='rejected').count(),
+    }
+
+    return render(request, 'appointments/admin_dashboard.html', {
+        'appointments': appointments,
+        'counts': counts,
+        'current_filter': status_filter,
+    })
+
+@staff_required
+def admin_approve(request, pk):
+    """Approve an appointment"""
+    appointment = get_object_or_404(Appointment, pk=pk)
+    appointment.status = 'approved'
+    appointment.rejection_reason = ''
+    appointment.save()
+    messages.success(request, f'Appointment for {appointment.client_name} has been approved.')
+    return redirect('appointments:admin_dashboard')
+
+@staff_required
+def admin_reject(request, pk):
+    """Reject an appointment with reason"""
+    appointment = get_object_or_404(Appointment, pk=pk)
+    if request.method == 'POST':
+        form = RejectionForm(request.POST)
+        if form.is_valid():
+            appointment.status = 'rejected'
+            appointment.rejection_reason = form.cleaned_data['reason']
+            appointment.save()
+            messages.success(request, f'Appointment for {appointment.client_name} has been rejected.')
+            return redirect('appointments:admin_dashboard')
+    return redirect('appointments:admin_dashboard')
+
+@staff_required
+def admin_appointment_detail(request, pk):
+    """View full appointment details including uploaded images"""
+    appointment = get_object_or_404(Appointment, pk=pk)
+    rejection_form = RejectionForm()
+    return render(request, 'appointments/admin_detail.html', {
+        'appointment': appointment,
+        'rejection_form': rejection_form,
+    })
