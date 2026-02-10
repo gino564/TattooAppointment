@@ -1,101 +1,369 @@
-﻿{% extends 'appointments/base.html' %}
+{% extends 'appointments/base.html' %}
 
-{% block title %}Home - Ink Haven Studio{% endblock %}
+{% block title %}My Appointments - J'ink Studio{% endblock %}
 
 {% block extra_css %}
 <style>
-    .home-container {
+    .dashboard-page {
+        background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+        min-height: calc(100vh - 80px);
+        padding: 40px 20px;
+        margin: -60px -30px;
+    }
+
+    .dashboard-container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
         text-align: center;
-        padding: 60px 20px;
+        margin-bottom: 40px;
     }
 
-    .welcome-message {
-        font-family: 'Rock Salt', cursive;
-        font-size: 2.5em;
-        color: #d4af37;
-        margin-bottom: 20px;
-        text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
-    }
-
-    .user-greeting {
-        font-family: 'Permanent Marker', cursive;
-        font-size: 1.5em;
-        color: #b0b0b0;
-        margin-bottom: 50px;
-    }
-
-    .quick-links {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 30px;
-        margin-top: 40px;
-        max-width: 900px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .link-card {
-        background: linear-gradient(145deg, #2d2d2d, #1f1f1f);
-        border: 2px solid #d4af37;
-        border-radius: 15px;
-        padding: 40px 30px;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-        text-decoration: none;
-        display: block;
-    }
-
-        .link-card:hover {
-            transform: translateY(-8px);
-            border-color: #ffd700;
-            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        .dashboard-header h2 {
+            font-family: 'Permanent Marker', cursive;
+            color: #d4af37;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin-bottom: 10px;
         }
 
-    .link-icon {
-        font-size: 4em;
-        margin-bottom: 20px;
-        display: block;
+        .dashboard-header p {
+            color: #b0b0b0;
+            font-size: 1rem;
+        }
+
+    .dashboard-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
     }
 
-    .link-title {
+    .btn-action-link {
+        padding: 12px 30px;
+        border: 2px solid #d4af37;
+        border-radius: 8px;
+        text-decoration: none;
         font-family: 'Bebas Neue', sans-serif;
-        font-size: 1.8em;
-        color: #d4af37;
+        font-size: 1.1rem;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 10px;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        color: #d4af37;
+        background: rgba(20, 20, 20, 0.8);
     }
 
-    .link-description {
-        color: #b0b0b0;
-        font-size: 1.1em;
+        .btn-action-link:hover {
+            background: #d4af37;
+            color: #0a0a0a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+    .appointments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 25px;
+    }
+
+    .appointment-card {
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+        padding: 25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .appointment-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffd700;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+    .appointment-card.approved { border-color: #28a745; }
+    .appointment-card.rejected { border-color: #dc3545; opacity: 0.8; }
+    .appointment-card.pending { border-color: #ffa500; }
+
+    .status-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 0.95rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .status-approved {
+        background: linear-gradient(145deg, #28a745, #20853a);
+        color: white;
+    }
+
+    .status-rejected {
+        background: linear-gradient(145deg, #dc3545, #c82333);
+        color: white;
+    }
+
+    .status-pending {
+        background: linear-gradient(145deg, #ffa500, #ff8c00);
+        color: white;
+    }
+
+    .card-header {
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        margin-top: 5px;
+    }
+
+    .client-name {
+        font-family: 'Permanent Marker', cursive;
+        font-size: 1.4rem;
+        color: #d4af37;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        font-size: 1rem;
+        color: #ccc;
+    }
+
+    .info-icon {
+        margin-right: 10px;
+        min-width: 24px;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #999;
+        margin-right: 8px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    .info-value {
+        color: #e0e0e0;
+    }
+
+    .appointment-date {
+        background: rgba(212, 175, 55, 0.1);
+        padding: 10px;
+        border-radius: 5px;
+        border-left: 3px solid #d4af37;
+    }
+
+    .tattoo-design {
+        background: rgba(212, 175, 55, 0.1);
+        color: #e0e0e0;
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 12px;
+        font-size: 0.95rem;
+        border-left: 3px solid #d4af37;
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .btn-card {
+        flex: 1;
+        padding: 10px 16px;
+        border: 2px solid;
+        border-radius: 8px;
+        text-decoration: none;
+        text-align: center;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit {
+        background: rgba(33, 150, 243, 0.1);
+        border-color: #2196f3;
+        color: #2196f3;
+    }
+
+        .btn-edit:hover {
+            background: #2196f3;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    .btn-delete {
+        background: rgba(244, 67, 54, 0.1);
+        border-color: #f44336;
+        color: #f44336;
+    }
+
+        .btn-delete:hover {
+            background: #f44336;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    .no-appointments {
+        text-align: center;
+        padding: 60px 20px;
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+    }
+
+        .no-appointments h3 {
+            font-family: 'Permanent Marker', cursive;
+            color: #d4af37;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .no-appointments p {
+            color: #999;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+    .messages {
+        max-width: 500px;
+        margin: 0 auto 20px auto;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 4px solid;
+    }
+
+    .alert-success {
+        background: rgba(76, 175, 80, 0.2);
+        border-color: #4caf50;
+        color: #4caf50;
+    }
+
+    .alert-error {
+        background: rgba(244, 67, 54, 0.2);
+        border-color: #f44336;
+        color: #ff6b6b;
+    }
+
+    .alert-info {
+        background: rgba(33, 150, 243, 0.2);
+        border-color: #2196f3;
+        color: #64b5f6;
+    }
+
+    .appointment-card.rejected .client-name {
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+        .appointments-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="home-container">
-    <h2 class="welcome-message">💀 Welcome to Ink Haven Studio 💀</h2>
-    <p class="user-greeting">Hello, {{ user.username }}! Ready to manage some appointments?</p>
+<div class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>My Appointments</h2>
+            <p>Hello, {{ user.username }}! Here are your scheduled sessions.</p>
+        </div>
 
-    <div class="quick-links">
-        <a href="{% url 'appointments:list-fbv' %}" class="link-card">
-            <span class="link-icon">📋</span>
-            <div class="link-title">View Appointments (FBV)</div>
-            <p class="link-description">Function-Based View</p>
-        </a>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
-        <a href="{% url 'appointments:list-cbv' %}" class="link-card">
-            <span class="link-icon">📋</span>
-            <div class="link-title">View Appointments (CBV)</div>
-            <p class="link-description">Class-Based View</p>
-        </a>
+        <div class="dashboard-actions">
+            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-action-link">New Enquiry</a>
+            <a href="{% url 'appointments:landing' %}" class="btn-action-link">Back to Home</a>
+            <a href="{% url 'appointments:logout' %}" class="btn-action-link">Logout</a>
+        </div>
 
-        <a href="{% url 'appointments:logout' %}" class="link-card">
-            <span class="link-icon">🚪</span>
-            <div class="link-title">Logout</div>
-            <p class="link-description">Sign out of your account</p>
-        </a>
+        {% if appointments %}
+        <div class="appointments-grid">
+            {% for appointment in appointments %}
+            <div class="appointment-card {{ appointment.status }}">
+                {% if appointment.status == 'approved' %}
+                <div class="status-badge status-approved">Approved</div>
+                {% elif appointment.status == 'rejected' %}
+                <div class="status-badge status-rejected">Rejected</div>
+                {% else %}
+                <div class="status-badge status-pending">Pending</div>
+                {% endif %}
+
+                <div class="card-header">
+                    <div class="client-name">{{ appointment.client_name }}</div>
+                </div>
+
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="info-icon">📧</span>
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">{{ appointment.email }}</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-icon">📱</span>
+                        <span class="info-label">Phone:</span>
+                        <span class="info-value">{{ appointment.phone }}</span>
+                    </div>
+
+                    <div class="info-row appointment-date">
+                        <span class="info-icon">📅</span>
+                        <span class="info-label">Date:</span>
+                        <span class="info-value">{{ appointment.appointment_date|date:"M d, Y - g:i A" }}</span>
+                    </div>
+
+                    <div class="tattoo-design">
+                        {{ appointment.tattoo_design }}
+                    </div>
+
+                    <div class="card-actions">
+                        <a href="{% url 'appointments:edit' appointment.pk %}" class="btn-card btn-edit">Edit</a>
+                        <a href="{% url 'appointments:delete' appointment.pk %}" class="btn-card btn-delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-appointments">
+            <h3>No Appointments Yet</h3>
+            <p>You haven't booked any sessions. Submit an enquiry to get started!</p>
+            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-action-link">Make an Enquiry</a>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

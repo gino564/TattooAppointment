@@ -161,7 +161,8 @@ def logout_view(request):
 
 @login_required(login_url='appointments:login')
 def index(request):
-    return render(request, 'appointments/index.html')
+    appointments = Appointment.objects.filter(user=request.user)
+    return render(request, 'appointments/index.html', {'appointments': appointments})
 
 @login_required(login_url='appointments:login')
 def appointment_list_fbv(request):
