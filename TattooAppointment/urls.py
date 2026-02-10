@@ -22,6 +22,7 @@ from django.conf.urls.static import static  # ← ADD THIS LINE TOO
 
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/appointments/landing/', permanent=False)),
     path('admin/', admin.site.urls),
     path('appointments/', include('appointments.urls')),  # Changed from '' to 'appointments/'
 ]
