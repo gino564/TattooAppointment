@@ -3,9 +3,10 @@
 {% block title %}My Appointments - J'ink Studio{% endblock %}
 
 {% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
     .dashboard-page {
-        background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+        background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
         background-attachment: fixed;
         min-height: calc(100vh - 80px);
         padding: 40px 20px;
@@ -20,7 +21,7 @@
 
     .dashboard-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 15px;
     }
 
         .dashboard-header h2 {
@@ -35,6 +36,7 @@
 
         .dashboard-header p {
             color: #b0b0b0;
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
         }
 
@@ -42,13 +44,13 @@
         display: flex;
         justify-content: center;
         gap: 15px;
-        margin-bottom: 40px;
+        margin-bottom: 50px;
         flex-wrap: wrap;
     }
 
-    .btn-action-link {
+    .btn-primary-action {
         padding: 12px 30px;
-        border: 2px solid #d4af37;
+        border: none;
         border-radius: 8px;
         text-decoration: none;
         font-family: 'Bebas Neue', sans-serif;
@@ -56,15 +58,34 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: all 0.3s ease;
-        color: #d4af37;
-        background: rgba(20, 20, 20, 0.8);
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #0a0a0a;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
     }
 
-        .btn-action-link:hover {
-            background: #d4af37;
-            color: #0a0a0a;
+        .btn-primary-action:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+    .btn-secondary-action {
+        padding: 12px 30px;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        border-radius: 8px;
+        text-decoration: none;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        color: #b0b0b0;
+        background: rgba(20, 20, 20, 0.6);
+    }
+
+        .btn-secondary-action:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+            transform: translateY(-2px);
         }
 
     .appointments-grid {
@@ -75,9 +96,9 @@
 
     .appointment-card {
         background: rgba(20, 20, 20, 0.95);
-        border: 2px solid #d4af37;
+        border: 2px solid rgba(212, 175, 55, 0.4);
         border-radius: 15px;
-        padding: 25px;
+        padding: 30px;
         transition: all 0.3s ease;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
         position: relative;
@@ -86,104 +107,113 @@
 
         .appointment-card:hover {
             transform: translateY(-5px);
-            border-color: #ffd700;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            border-color: #d4af37;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
         }
 
-    .appointment-card.approved { border-color: #28a745; }
-    .appointment-card.rejected { border-color: #dc3545; opacity: 0.8; }
-    .appointment-card.pending { border-color: #ffa500; }
+    .appointment-card.approved { border-color: rgba(40, 167, 69, 0.6); }
+    .appointment-card.rejected { border-color: rgba(220, 53, 69, 0.4); }
+    .appointment-card.pending { border-color: rgba(255, 165, 0, 0.5); }
 
     .status-badge {
         position: absolute;
         top: 15px;
         right: 15px;
-        padding: 6px 14px;
+        padding: 5px 12px;
         border-radius: 20px;
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 0.95rem;
-        font-weight: bold;
-        letter-spacing: 1px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
         text-transform: uppercase;
     }
 
     .status-approved {
-        background: linear-gradient(145deg, #28a745, #20853a);
-        color: white;
+        background: rgba(40, 167, 69, 0.15);
+        color: #5cb85c;
+        border: 1px solid rgba(40, 167, 69, 0.3);
     }
 
     .status-rejected {
-        background: linear-gradient(145deg, #dc3545, #c82333);
-        color: white;
+        background: rgba(220, 53, 69, 0.15);
+        color: #e57373;
+        border: 1px solid rgba(220, 53, 69, 0.3);
     }
 
     .status-pending {
-        background: linear-gradient(145deg, #ffa500, #ff8c00);
-        color: white;
+        background: rgba(255, 165, 0, 0.15);
+        color: #ffb74d;
+        border: 1px solid rgba(255, 165, 0, 0.3);
     }
 
     .card-header {
-        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         padding-bottom: 15px;
-        margin-bottom: 15px;
+        margin-bottom: 18px;
         margin-top: 5px;
     }
 
     .client-name {
-        font-family: 'Permanent Marker', cursive;
-        font-size: 1.4rem;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.5rem;
         color: #d4af37;
+        letter-spacing: 1px;
     }
 
     .info-row {
         display: flex;
         align-items: center;
-        margin: 10px 0;
-        font-size: 1rem;
+        margin: 12px 0;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
         color: #ccc;
     }
 
     .info-icon {
         margin-right: 10px;
         min-width: 24px;
+        font-size: 1rem;
     }
 
     .info-label {
-        font-weight: bold;
-        color: #999;
+        font-weight: 600;
+        color: #888;
         margin-right: 8px;
         text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 1px;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
     }
 
     .info-value {
         color: #e0e0e0;
+        font-weight: 400;
     }
 
     .appointment-date {
-        background: rgba(212, 175, 55, 0.1);
-        padding: 10px;
-        border-radius: 5px;
+        background: rgba(212, 175, 55, 0.08);
+        padding: 10px 12px;
+        border-radius: 6px;
         border-left: 3px solid #d4af37;
     }
 
     .tattoo-design {
-        background: rgba(212, 175, 55, 0.1);
-        color: #e0e0e0;
-        padding: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        color: #ccc;
+        padding: 12px 14px;
         border-radius: 8px;
-        margin-top: 12px;
-        font-size: 0.95rem;
-        border-left: 3px solid #d4af37;
+        margin-top: 14px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
+        border-left: 3px solid rgba(212, 175, 55, 0.4);
+        line-height: 1.5;
     }
 
     .card-actions {
         display: flex;
         gap: 10px;
-        margin-top: 18px;
+        margin-top: 20px;
         padding-top: 15px;
-        border-top: 1px solid rgba(212, 175, 55, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .btn-card {
@@ -201,34 +231,36 @@
     }
 
     .btn-edit {
-        background: rgba(33, 150, 243, 0.1);
-        border-color: #2196f3;
-        color: #2196f3;
+        background: rgba(33, 150, 243, 0.08);
+        border-color: rgba(33, 150, 243, 0.4);
+        color: #64b5f6;
     }
 
         .btn-edit:hover {
             background: #2196f3;
+            border-color: #2196f3;
             color: #fff;
             transform: translateY(-2px);
         }
 
     .btn-delete {
-        background: rgba(244, 67, 54, 0.1);
-        border-color: #f44336;
-        color: #f44336;
+        background: rgba(244, 67, 54, 0.08);
+        border-color: rgba(244, 67, 54, 0.4);
+        color: #e57373;
     }
 
         .btn-delete:hover {
             background: #f44336;
+            border-color: #f44336;
             color: #fff;
             transform: translateY(-2px);
         }
 
     .no-appointments {
         text-align: center;
-        padding: 60px 20px;
+        padding: 80px 20px;
         background: rgba(20, 20, 20, 0.95);
-        border: 2px solid #d4af37;
+        border: 2px solid rgba(212, 175, 55, 0.3);
         border-radius: 15px;
     }
 
@@ -240,9 +272,10 @@
         }
 
         .no-appointments p {
-            color: #999;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            color: #888;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 25px;
         }
 
     .messages {
@@ -255,22 +288,24 @@
         border-radius: 8px;
         margin-bottom: 15px;
         border-left: 4px solid;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
     }
 
     .alert-success {
-        background: rgba(76, 175, 80, 0.2);
+        background: rgba(76, 175, 80, 0.15);
         border-color: #4caf50;
-        color: #4caf50;
+        color: #81c784;
     }
 
     .alert-error {
-        background: rgba(244, 67, 54, 0.2);
+        background: rgba(244, 67, 54, 0.15);
         border-color: #f44336;
-        color: #ff6b6b;
+        color: #e57373;
     }
 
     .alert-info {
-        background: rgba(33, 150, 243, 0.2);
+        background: rgba(33, 150, 243, 0.15);
         border-color: #2196f3;
         color: #64b5f6;
     }
@@ -278,6 +313,10 @@
     .appointment-card.rejected .client-name {
         text-decoration: line-through;
         opacity: 0.6;
+    }
+
+    .appointment-card.rejected .card-body {
+        opacity: 0.7;
     }
 
     @media (max-width: 768px) {
@@ -307,9 +346,8 @@
         {% endif %}
 
         <div class="dashboard-actions">
-            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-action-link">New Enquiry</a>
-            <a href="{% url 'appointments:landing' %}" class="btn-action-link">Back to Home</a>
-            <a href="{% url 'appointments:logout' %}" class="btn-action-link">Logout</a>
+            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-primary-action">New Enquiry</a>
+            <a href="{% url 'appointments:landing' %}" class="btn-secondary-action">Back to Home</a>
         </div>
 
         {% if appointments %}
@@ -363,7 +401,7 @@
         <div class="no-appointments">
             <h3>No Appointments Yet</h3>
             <p>You haven't booked any sessions. Submit an enquiry to get started!</p>
-            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-action-link">Make an Enquiry</a>
+            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-primary-action">Make an Enquiry</a>
         </div>
         {% endif %}
     </div>
