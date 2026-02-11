@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, LoginForm, AppointmentBookingForm, RejectionForm
+from .forms import RegisterForm, LoginForm, AppointmentBookingForm, RejectionForm, ReviewForm
 from django.views.generic import ListView
 from .models import Appointment, TattooStyle, Artist, Studio, Review
 
@@ -17,9 +17,9 @@ from .models import Appointment, TattooStyle, Artist, Studio, Review
 def landing_page(request):
     """Public landing page - Homepage"""
     styles = TattooStyle.objects.filter(is_active=True)[:4]
-    artists = Artist.objects.filter(is_active=True)[:8]
+    artists = Artist.objects.filter(is_active=True)[:4]
     studios = Studio.objects.filter(is_active=True)[:2]
-    reviews = Review.objects.filter(is_approved=True, is_featured=True)[:4]
+    reviews = Review.objects.filter(is_approved=True)[:8]
 
     context = {
         'styles': styles,
@@ -270,3 +270,37 @@ def admin_appointment_detail(request, pk):
         'appointment': appointment,
         'rejection_form': rejection_form,
     })
+
+
+# ============================================
+# CLIENT REVIEW VIEW
+# ============================================
+
+@login_required(login_url='appointments:login')
+def submit_review(request):
+    """Client submits a review"""
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.client_name = f'{request.user.first_name} {request.user.last_name}'.strip() or request.user.username
+            review.save()
+            messages.success(request, 'Thank you for your review!')
+            return redirect('appointments:index')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ReviewForm()
+
+    return render(request, 'appointments/submit_review.html', {'form': form})
+
+
+# ============================================
+# ARTIST PROFILE VIEW
+# ============================================
+
+def artist_profile(request, pk):
+    """Public artist profile page"""
+    artist = get_object_or_404(Artist, pk=pk, is_active=True)
+    return render(request, 'appointments/artist_profile.html', {'artist': artist})

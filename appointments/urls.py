@@ -29,4 +29,10 @@ urlpatterns = [
     path('admin-panel/approve/<int:pk>/', views.admin_approve, name='admin_approve'),
     path('admin-panel/reject/<int:pk>/', views.admin_reject, name='admin_reject'),
     path('admin-panel/detail/<int:pk>/', views.admin_appointment_detail, name='admin_detail'),
+
+    # Client review
+    path('review/', views.submit_review, name='submit_review'),
+
+    # Artist profile (public)
+    path('artist/<int:pk>/', views.artist_profile, name='artist_profile'),
 ]

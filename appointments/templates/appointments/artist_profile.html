@@ -1,0 +1,236 @@
+{% extends 'appointments/base.html' %}
+
+{% block title %}{{ artist.name }} - J'ink Studio{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    .profile-page {
+        background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+        background-attachment: fixed;
+        min-height: calc(100vh - 80px);
+        padding: 40px 20px;
+        margin: -60px calc(-50vw + 50%);
+        width: 100vw;
+    }
+
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .profile-card {
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .profile-hero {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+    }
+
+    .profile-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-hero-overlay {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background: linear-gradient(transparent, rgba(0,0,0,0.95));
+        padding: 30px;
+    }
+
+    .artist-name {
+        font-family: 'Permanent Marker', cursive;
+        color: #d4af37;
+        font-size: 2.5rem;
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .artist-role {
+        font-family: 'Bebas Neue', sans-serif;
+        color: #b0b0b0;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .profile-body {
+        padding: 35px;
+    }
+
+    .section-label {
+        font-family: 'Bebas Neue', sans-serif;
+        color: #d4af37;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .bio-text {
+        font-family: 'Inter', sans-serif;
+        color: #ccc;
+        font-size: 0.95rem;
+        line-height: 1.8;
+        margin-bottom: 30px;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        margin: 12px 0;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #888;
+        min-width: 120px;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-value {
+        color: #e0e0e0;
+    }
+
+    .detail-value a {
+        color: #d4af37;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .detail-value a:hover {
+        color: #ffd700;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 12px 25px;
+        border: 2px solid;
+        border-radius: 8px;
+        text-decoration: none;
+        text-align: center;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        min-width: 150px;
+    }
+
+    .btn-book {
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #0a0a0a;
+        border-color: #d4af37;
+    }
+
+        .btn-book:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+    .btn-back {
+        background: rgba(20, 20, 20, 0.6);
+        border-color: rgba(212, 175, 55, 0.5);
+        color: #b0b0b0;
+    }
+
+        .btn-back:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+            transform: translateY(-2px);
+        }
+
+    .no-image {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(212, 175, 55, 0.05);
+        font-size: 5rem;
+    }
+
+    @media (max-width: 768px) {
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-hero">
+                {% if artist.image %}
+                <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
+                {% elif artist.image_url %}
+                <img src="{{ artist.image_url }}" alt="{{ artist.name }}">
+                {% else %}
+                <div class="no-image">🎨</div>
+                {% endif %}
+                <div class="profile-hero-overlay">
+                    <div class="artist-name">{{ artist.name }}</div>
+                    <div class="artist-role">{{ artist.get_role_display }}</div>
+                </div>
+            </div>
+
+            <div class="profile-body">
+                {% if artist.bio %}
+                <div class="section-label">About</div>
+                <p class="bio-text">{{ artist.bio }}</p>
+                {% endif %}
+
+                <div class="section-label">Details</div>
+                <div class="detail-row">
+                    <span class="detail-label">Role</span>
+                    <span class="detail-value">{{ artist.get_role_display }}</span>
+                </div>
+
+                {% if artist.instagram %}
+                <div class="detail-row">
+                    <span class="detail-label">Instagram</span>
+                    <span class="detail-value"><a href="https://instagram.com/{{ artist.instagram }}" target="_blank">@{{ artist.instagram }}</a></span>
+                </div>
+                {% endif %}
+
+                {% if artist.portfolio_url %}
+                <div class="detail-row">
+                    <span class="detail-label">Portfolio</span>
+                    <span class="detail-value"><a href="{{ artist.portfolio_url }}" target="_blank">View Portfolio</a></span>
+                </div>
+                {% endif %}
+
+                <div class="action-buttons">
+                    <a href="{% url 'appointments:book_session' %}" class="btn-action btn-book">Book with {{ artist.name }}</a>
+                    <a href="{% url 'appointments:landing' %}#artists" class="btn-action btn-back">Back to Artists</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
