@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-v9g(lqo6hteh!^iqdbpdfh+cpfaf_x-n-r7jtb3^2)zgvtynbu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -122,9 +122,8 @@ STATICFILES_DIRS = [
 ]
 
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Media files (User uploaded content)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Make sure you have this import at the top
-import os
