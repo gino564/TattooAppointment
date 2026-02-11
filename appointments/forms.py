@@ -1,7 +1,7 @@
 ﻿from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Appointment, TattooStyle, Artist, Review
+from .models import Appointment, TattooStyle, Artist
 
 class RegisterForm(UserCreationForm):
     """Custom registration form with additional fields"""
@@ -153,23 +153,3 @@ class RejectionForm(forms.Form):
         }),
         required=True,
     )
-
-
-# ============================================
-# REVIEW FORM FOR CLIENTS
-# ============================================
-class ReviewForm(forms.ModelForm):
-    """Form for clients to leave a review"""
-    class Meta:
-        model = Review
-        fields = ['rating', 'review_text']
-        widgets = {
-            'rating': forms.Select(attrs={
-                'class': 'form-control',
-            }),
-            'review_text': forms.Textarea(attrs={
-                'class': 'form-control',
-                'placeholder': 'Share your experience...',
-                'rows': 4,
-            }),
-        }

@@ -114,13 +114,12 @@ class Studio(models.Model):
 
 class Review(models.Model):
     """Client testimonials"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     client_name = models.CharField(max_length=100)
     rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=5)
     review_text = models.TextField()
     date = models.DateField(auto_now_add=True)
     is_featured = models.BooleanField(default=False)
-    is_approved = models.BooleanField(default=True)
+    is_approved = models.BooleanField(default=False)
     image = models.ImageField(upload_to='reviews/', blank=True, null=True)
     
     def __str__(self):
