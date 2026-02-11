@@ -225,7 +225,7 @@
         /* Artists Grid */
         .artists-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
@@ -279,51 +279,6 @@
             font-size: 0.9rem;
             margin: 0 10px;
         }
-
-        /* Studios */
-        .studios-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .studio-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            height: 400px;
-        }
-
-            .studio-card img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                transition: transform 0.3s;
-            }
-
-            .studio-card:hover img {
-                transform: scale(1.1);
-            }
-
-        .studio-overlay {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: linear-gradient(transparent, rgba(0,0,0,0.95));
-            padding: 30px;
-        }
-
-            .studio-overlay h3 {
-                color: #d4af37;
-                font-size: 1.5rem;
-                margin-bottom: 5px;
-            }
-
-            .studio-overlay p {
-                color: #ccc;
-            }
 
         /* Reviews */
         .reviews {
@@ -564,10 +519,6 @@
             section {
                 padding: 50px 20px;
             }
-
-            .studios-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -651,11 +602,11 @@
     <section id="story" class="story">
         <h2 class="section-title">About</h2>
         <div class="story-content">
-            <p>This Tattoo Appointments system is a Project in --.</p>
-         
-           
+            <p>Welcome to J'ink Studio, where passion meets artistry. Our team of talented artists specializes in a wide range of tattoo styles — from bold traditional designs to intricate fine line work. Every piece we create is a collaboration between artist and client, ensuring your vision comes to life on skin.</p>
             <br>
-            <a href="#artists" class="btn btn-secondary">More</a>
+            <p>With years of experience and a commitment to the highest standards of hygiene and professionalism, we provide a welcoming space for both first-timers and seasoned collectors. Book your session today and let us help you wear your story.</p>
+            <br>
+            <a href="#artists" class="btn btn-secondary">Meet Our Artists</a>
         </div>
     </section>
 
@@ -757,45 +708,9 @@
         </div>
     </section>
 
-    <!-- Studios -->
-    <section id="studios">
-        <h2 class="section-title">Our Studios</h2>
-        <div class="studios-grid">
-            {% for studio in studios %}
-            <div class="studio-card">
-                <img src="{{ studio.image_url|default:'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=800' }}" alt="{{ studio.name }}">
-                <div class="studio-overlay">
-                    <h3>{{ studio.name }}</h3>
-                    <p>{{ studio.city }}, {{ studio.country }}</p>
-                </div>
-            </div>
-            {% empty %}
-            <div class="studio-card">
-                <img src="https://images.unsplash.com/photo-1585421514738-01798e348b17?w=800" alt="Squidink Tattoo UK">
-                <div class="studio-overlay">
-                    <h3>SQUIDINK TATTOO UK</h3>
-                    <p>Folkestone, Kent</p>
-                </div>
-            </div>
-            <div class="studio-card">
-                <img src="https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?w=800" alt="Squidink Tattoo Spain">
-                <div class="studio-overlay">
-                    <h3>SQUIDINK TATTOO SPAIN</h3>
-                    <p>Ampuriabrava, Girona</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-
     <!-- Reviews -->
     <section id="reviews" class="reviews">
         <h2 class="section-title">Our Reviews</h2>
-        {% if user.is_authenticated %}
-        <div style="text-align: center; margin-bottom: 30px;">
-            <a href="{% url 'appointments:submit_review' %}" class="btn btn-secondary">Leave a Review</a>
-        </div>
-        {% endif %}
         <div class="reviews-grid">
             {% for review in reviews %}
             <div class="review-card">
@@ -870,7 +785,6 @@
                 <h3>About Us</h3>
                 <a href="#story">Our Story</a>
                 <a href="#artists">Our Artists</a>
-                <a href="#studios">Studios</a>
                 <a href="#styles">Gallery</a>
             </div>
 
