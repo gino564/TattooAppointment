@@ -608,10 +608,24 @@
     <!-- Tattoo Styles -->
     <section id="styles">
         <h2 class="section-title">Our Styles</h2>
+        {% if user.is_staff %}
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="{% url 'appointments:add_style' %}" class="admin-add-artist">+ Add Style</a>
+        </div>
+        {% endif %}
         <div class="styles-grid">
             {% for style in styles %}
             <div class="style-card">
-                <img src="{{ style.image_url|default:'https://images.unsplash.com/photo-1590246814883-57c511e0deed?w=400' }}" alt="{{ style.name }}">
+                {% if user.is_staff %}
+                <a href="{% url 'appointments:edit_style' style.pk %}" class="admin-edit-btn" title="Edit {{ style.name }}">&#9998;</a>
+                {% endif %}
+                {% if style.image %}
+                <img src="{{ style.image.url }}" alt="{{ style.name }}">
+                {% elif style.image_url %}
+                <img src="{{ style.image_url }}" alt="{{ style.name }}" onerror="this.src='https://images.unsplash.com/photo-1590246814883-57c511e0deed?w=400'">
+                {% else %}
+                <img src="https://images.unsplash.com/photo-1590246814883-57c511e0deed?w=400" alt="{{ style.name }}">
+                {% endif %}
                 <div class="style-overlay">
                     <h3>{{ style.name }}</h3>
                 </div>

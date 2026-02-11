@@ -30,6 +30,11 @@ urlpatterns = [
     # Artist profile (public)
     path('artist/<int:pk>/', views.artist_profile, name='artist_profile'),
 
+    # Admin style management (staff only)
+    path('style/add/', views.add_style, name='add_style'),
+    path('style/edit/<int:pk>/', views.edit_style, name='edit_style'),
+    path('style/delete/<int:pk>/', views.delete_style, name='delete_style'),
+
     # Admin artist management (staff only)
     path('artist/add/', views.add_artist, name='add_artist'),
     path('artist/edit/<int:pk>/', views.edit_artist, name='edit_artist'),

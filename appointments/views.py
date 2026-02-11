@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, LoginForm, AppointmentBookingForm, RejectionForm, ReviewForm, ArtistForm
+from .forms import RegisterForm, LoginForm, AppointmentBookingForm, RejectionForm, ReviewForm, ArtistForm, TattooStyleForm
 from django.views.generic import ListView
 from .models import Appointment, TattooStyle, Artist, Studio, Review, PortfolioImage
 
@@ -387,3 +387,63 @@ def delete_portfolio_image(request, pk):
         image.delete()
         messages.success(request, 'Portfolio image removed.')
     return redirect('appointments:edit_artist', pk=artist_pk)
+
+
+# ============================================
+# ADMIN STYLE MANAGEMENT VIEWS
+# ============================================
+
+@staff_required
+def add_style(request):
+    """Admin adds a new tattoo style"""
+    if request.method == 'POST':
+        form = TattooStyleForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Style added successfully!')
+            return redirect('appointments:landing')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = TattooStyleForm()
+
+    return render(request, 'appointments/style_form.html', {
+        'form': form,
+        'title': 'Add New Style',
+    })
+
+
+@staff_required
+def edit_style(request, pk):
+    """Admin edits an existing tattoo style"""
+    style = get_object_or_404(TattooStyle, pk=pk)
+
+    if request.method == 'POST':
+        form = TattooStyleForm(request.POST, request.FILES, instance=style)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'{style.name} updated successfully!')
+            return redirect('appointments:landing')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = TattooStyleForm(instance=style)
+
+    return render(request, 'appointments/style_form.html', {
+        'form': form,
+        'style': style,
+        'title': f'Edit {style.name}',
+    })
+
+
+@staff_required
+def delete_style(request, pk):
+    """Admin deletes a tattoo style"""
+    style = get_object_or_404(TattooStyle, pk=pk)
+    if request.method == 'POST':
+        name = style.name
+        if style.image:
+            style.image.delete()
+        style.delete()
+        messages.success(request, f'{name} has been removed.')
+    return redirect('appointments:landing')
