@@ -665,10 +665,16 @@
         <div class="artists-grid">
             {% for artist in artists %}
             <div class="artist-card">
-                <img src="{{ artists.image.url }}" alt="{{ artists.name }}" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400'">             
+                {% if artist.image %}
+                <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
+                {% elif artist.image_url %}
+                <img src="{{ artist.image_url }}" alt="{{ artist.name }}" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400'">
+                {% else %}
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400" alt="{{ artist.name }}">
+                {% endif %}
                 <div class="artist-info">
-                    <h3>{{ artists.name }}</h3>
-                    <p class="artist-role">{{ artists.get_role_display }}</p>
+                    <h3>{{ artist.name }}</h3>
+                    <p class="artist-role">{{ artist.get_role_display }}</p>
                     <div class="artist-links">
                         <a href="#">View Portfolio ></a>
                     </div>

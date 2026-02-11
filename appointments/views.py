@@ -17,7 +17,7 @@ from .models import Appointment, TattooStyle, Artist, Studio, Review
 def landing_page(request):
     """Public landing page - Homepage"""
     styles = TattooStyle.objects.filter(is_active=True)[:4]
-    artists = Artist.objects.filter(is_active=True)[:8]
+    artists = Artist.objects.filter(is_active=True)[:4]
     studios = Studio.objects.filter(is_active=True)[:2]
     reviews = Review.objects.filter(is_approved=True, is_featured=True)[:4]
 
