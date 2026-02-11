@@ -24,6 +24,12 @@ urlpatterns = [
     # Client booking
     path('book/', views.book_session, name='book_session'),
 
+    # Client review
+    path('review/', views.submit_review, name='submit_review'),
+
+    # Artist profile (public)
+    path('artist/<int:pk>/', views.artist_profile, name='artist_profile'),
+
     # Admin panel URLs (staff only)
     path('admin-panel/', views.admin_dashboard, name='admin_dashboard'),
     path('admin-panel/approve/<int:pk>/', views.admin_approve, name='admin_approve'),

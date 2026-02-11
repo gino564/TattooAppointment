@@ -1,0 +1,231 @@
+{% extends 'appointments/base.html' %}
+
+{% block title %}Leave a Review - J'ink Studio{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    .review-page {
+        background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+        background-attachment: fixed;
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        margin: -60px calc(-50vw + 50%);
+        width: 100vw;
+    }
+
+    .review-container {
+        max-width: 550px;
+        width: 100%;
+        padding: 40px;
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+    }
+
+    .review-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .review-header h2 {
+            font-family: 'Permanent Marker', cursive;
+            color: #d4af37;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+        }
+
+        .review-header p {
+            color: #b0b0b0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            color: #d4af37;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(13, 13, 13, 0.8);
+        border: 2px solid #d4af37;
+        border-radius: 8px;
+        color: #f0f0f0;
+        font-size: 1rem;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background: rgba(13, 13, 13, 0.95);
+        }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+    .star-rating {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 5px;
+    }
+
+    .star-rating label {
+        font-size: 2rem;
+        color: #555;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .star-rating input[type="radio"] {
+        display: none;
+    }
+
+    .star-rating label:hover,
+    .star-rating label:hover ~ label,
+    .star-rating input:checked ~ label {
+        color: #d4af37;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #0d0d0d;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        margin-top: 10px;
+    }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+    .btn-back {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #b0b0b0;
+        text-decoration: none;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            color: #d4af37;
+        }
+
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+    }
+
+        .errorlist li {
+            color: #ff4444;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            background: rgba(255, 68, 68, 0.1);
+            border-left: 3px solid #ff4444;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+
+    .messages {
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 4px solid;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .alert-error {
+        background: rgba(244, 67, 54, 0.15);
+        border-color: #f44336;
+        color: #e57373;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="review-page">
+    <div class="review-container">
+        <div class="review-header">
+            <h2>Leave a Review</h2>
+            <p>Share your experience at J'ink Studio</p>
+        </div>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" novalidate>
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.rating.id_for_label }}">Rating</label>
+                {{ form.rating }}
+                {{ form.rating.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.review_text.id_for_label }}">Your Review</label>
+                {{ form.review_text }}
+                {{ form.review_text.errors }}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="errorlist">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-submit">Submit Review</button>
+        </form>
+
+        <a href="{% url 'appointments:index' %}" class="btn-back">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

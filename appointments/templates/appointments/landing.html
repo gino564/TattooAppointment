@@ -664,6 +664,7 @@
         <h2 class="section-title">Our Artists</h2>
         <div class="artists-grid">
             {% for artist in artists %}
+            <a href="{% url 'appointments:artist_profile' artist.pk %}" style="text-decoration: none; color: inherit;">
             <div class="artist-card">
                 {% if artist.image %}
                 <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
@@ -676,10 +677,11 @@
                     <h3>{{ artist.name }}</h3>
                     <p class="artist-role">{{ artist.get_role_display }}</p>
                     <div class="artist-links">
-                        <a href="#">View Portfolio ></a>
+                        <span>View Profile ></span>
                     </div>
                 </div>
             </div>
+            </a>
             {% empty %}
             <div class="artist-card">
                 <img src="" alt="Rob">
@@ -789,6 +791,11 @@
     <!-- Reviews -->
     <section id="reviews" class="reviews">
         <h2 class="section-title">Our Reviews</h2>
+        {% if user.is_authenticated %}
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="{% url 'appointments:submit_review' %}" class="btn btn-secondary">Leave a Review</a>
+        </div>
+        {% endif %}
         <div class="reviews-grid">
             {% for review in reviews %}
             <div class="review-card">

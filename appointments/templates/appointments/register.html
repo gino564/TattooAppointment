@@ -1,17 +1,30 @@
-﻿{% extends 'appointments/base.html' %}
+{% extends 'appointments/base.html' %}
 
-{% block title %}Register - Ink Haven Studio{% endblock %}
+{% block title %}Register - J'ink Studio{% endblock %}
 
 {% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+    .auth-page {
+        background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+        background-attachment: fixed;
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        margin: -60px calc(-50vw + 50%);
+        width: 100vw;
+    }
+
     .auth-container {
-        max-width: 500px;
-        margin: 50px auto;
+        max-width: 550px;
+        width: 100%;
         padding: 40px;
-        background: rgba(26, 26, 26, 0.95);
-        border: 3px solid #d4af37;
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid #d4af37;
         border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(212, 175, 55, 0.4);
+        box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
     }
 
     .auth-header {
@@ -20,20 +33,29 @@
     }
 
         .auth-header h2 {
-            font-family: 'Rock Salt', cursive;
+            font-family: 'Permanent Marker', cursive;
             color: #d4af37;
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+            line-height: 1.2;
         }
 
         .auth-header p {
             color: #b0b0b0;
+            font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
         }
 
+    .name-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
     .form-group {
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
 
         .form-group label {
@@ -54,6 +76,7 @@
         border-radius: 8px;
         color: #f0f0f0;
         font-size: 1rem;
+        font-family: 'Inter', sans-serif;
         transition: all 0.3s ease;
     }
 
@@ -71,7 +94,8 @@
     .help-text {
         display: block;
         color: #888;
-        font-size: 0.85rem;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.8rem;
         margin-top: 5px;
         font-style: italic;
     }
@@ -124,6 +148,7 @@
 
         .auth-footer p {
             color: #b0b0b0;
+            font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
         }
 
@@ -148,6 +173,7 @@
         border-radius: 8px;
         margin-bottom: 15px;
         border-left: 4px solid;
+        font-family: 'Inter', sans-serif;
     }
 
     .alert-success {
@@ -161,87 +187,97 @@
         border-color: #f44336;
         color: #ff6b6b;
     }
+
+    @media (max-width: 500px) {
+        .name-row {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="auth-header">
-        <h2>💀 Join Us 💀</h2>
-        <p>Create your account at Ink Haven Studio</p>
-    </div>
-
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <form method="POST" novalidate>
-        {% csrf_token %}
-
-        <div class="form-group">
-            <label for="{{ form.username.id_for_label }}">Username *</label>
-            {{ form.username }}
-            {% if form.username.help_text %}
-            <span class="help-text">{{ form.username.help_text }}</span>
-            {% endif %}
-            {{ form.username.errors }}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Join the Collective</h2>
+            <p>Create your account at J'ink Studio</p>
         </div>
 
-        <div class="form-group">
-            <label for="{{ form.first_name.id_for_label }}">First Name *</label>
-            {{ form.first_name }}
-            {{ form.first_name.errors }}
-        </div>
-
-        <div class="form-group">
-            <label for="{{ form.last_name.id_for_label }}">Last Name *</label>
-            {{ form.last_name }}
-            {{ form.last_name.errors }}
-        </div>
-
-        <div class="form-group">
-            <label for="{{ form.email.id_for_label }}">Email *</label>
-            {{ form.email }}
-            {{ form.email.errors }}
-        </div>
-
-        <div class="form-group">
-            <label for="{{ form.password1.id_for_label }}">Password *</label>
-            {{ form.password1 }}
-            {% if form.password1.help_text %}
-            <span class="help-text">{{ form.password1.help_text }}</span>
-            {% endif %}
-            {{ form.password1.errors }}
-        </div>
-
-        <div class="form-group">
-            <label for="{{ form.password2.id_for_label }}">Confirm Password *</label>
-            {{ form.password2 }}
-            {% if form.password2.help_text %}
-            <span class="help-text">{{ form.password2.help_text }}</span>
-            {% endif %}
-            {{ form.password2.errors }}
-        </div>
-
-        {% if form.non_field_errors %}
-        <div class="errorlist">
-            {{ form.non_field_errors }}
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
         </div>
         {% endif %}
 
-        <button type="submit" class="btn-register">
-            Create Account
-        </button>
-    </form>
+        <form method="POST" novalidate>
+            {% csrf_token %}
 
-    <div class="auth-footer">
-        <p>Already have an account? <a href="{% url 'appointments:login' %}">Login here</a></p>
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username *</label>
+                {{ form.username }}
+                {% if form.username.help_text %}
+                <span class="help-text">{{ form.username.help_text }}</span>
+                {% endif %}
+                {{ form.username.errors }}
+            </div>
+
+            <div class="name-row">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First Name *</label>
+                    {{ form.first_name }}
+                    {{ form.first_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last Name *</label>
+                    {{ form.last_name }}
+                    {{ form.last_name.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email *</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Password *</label>
+                {{ form.password1 }}
+                {% if form.password1.help_text %}
+                <span class="help-text">{{ form.password1.help_text }}</span>
+                {% endif %}
+                {{ form.password1.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirm Password *</label>
+                {{ form.password2 }}
+                {% if form.password2.help_text %}
+                <span class="help-text">{{ form.password2.help_text }}</span>
+                {% endif %}
+                {{ form.password2.errors }}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="errorlist">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-register">
+                Create Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{% url 'appointments:login' %}">Login here</a></p>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,243 @@
+{% extends 'appointments/base.html' %}
+
+{% block title %}{{ artist.name }} - J'ink Studio{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    .profile-page {
+        background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+        background-attachment: fixed;
+        min-height: calc(100vh - 80px);
+        padding: 60px 20px;
+        margin: -60px calc(-50vw + 50%);
+        width: 100vw;
+    }
+
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .profile-card {
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+    }
+
+    .profile-hero {
+        position: relative;
+        height: 350px;
+        overflow: hidden;
+    }
+
+        .profile-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-hero .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.95));
+            padding: 40px 30px 30px;
+        }
+
+        .profile-hero h1 {
+            font-family: 'Permanent Marker', cursive;
+            color: #d4af37;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+    .role-badge {
+        display: inline-block;
+        padding: 4px 14px;
+        background: rgba(212, 175, 55, 0.15);
+        color: #d4af37;
+        border: 1px solid rgba(212, 175, 55, 0.4);
+        border-radius: 20px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .profile-body {
+        padding: 30px;
+    }
+
+    .profile-section {
+        margin-bottom: 25px;
+    }
+
+        .profile-section h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            color: #d4af37;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .profile-section p {
+            color: #ccc;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+    .profile-links {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .profile-link {
+        padding: 10px 20px;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        border-radius: 8px;
+        color: #d4af37;
+        text-decoration: none;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+        .profile-link:hover {
+            background: #d4af37;
+            color: #0a0a0a;
+            transform: translateY(-2px);
+        }
+
+    .profile-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .btn-book {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #0a0a0a;
+        border: none;
+        border-radius: 8px;
+        text-decoration: none;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+        .btn-book:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+    .btn-back-link {
+        padding: 12px 30px;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        border-radius: 8px;
+        color: #b0b0b0;
+        text-decoration: none;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        background: rgba(20, 20, 20, 0.6);
+    }
+
+        .btn-back-link:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+            transform: translateY(-2px);
+        }
+
+    .no-image-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5rem;
+        color: #d4af37;
+    }
+
+    @media (max-width: 768px) {
+        .profile-hero {
+            height: 250px;
+        }
+
+        .profile-hero h1 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-hero">
+                {% if artist.image %}
+                <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
+                {% elif artist.image_url %}
+                <img src="{{ artist.image_url }}" alt="{{ artist.name }}" onerror="this.parentElement.innerHTML='<div class=no-image-placeholder>&#9998;</div>'">
+                {% else %}
+                <div class="no-image-placeholder">&#9998;</div>
+                {% endif %}
+                <div class="overlay">
+                    <h1>{{ artist.name }}</h1>
+                    <span class="role-badge">{{ artist.get_role_display }}</span>
+                </div>
+            </div>
+
+            <div class="profile-body">
+                {% if artist.bio %}
+                <div class="profile-section">
+                    <h3>About</h3>
+                    <p>{{ artist.bio }}</p>
+                </div>
+                {% endif %}
+
+                {% if artist.instagram or artist.portfolio_url %}
+                <div class="profile-section">
+                    <h3>Connect</h3>
+                    <div class="profile-links">
+                        {% if artist.instagram %}
+                        <a href="https://instagram.com/{{ artist.instagram }}" target="_blank" class="profile-link">Instagram: @{{ artist.instagram }}</a>
+                        {% endif %}
+                        {% if artist.portfolio_url %}
+                        <a href="{{ artist.portfolio_url }}" target="_blank" class="profile-link">Portfolio</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="profile-actions">
+                    <a href="{% url 'appointments:book_session' %}" class="btn-book">Book with {{ artist.name }}</a>
+                    <a href="{% url 'appointments:landing' %}#artists" class="btn-back-link">Back to Artists</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
