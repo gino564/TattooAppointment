@@ -237,6 +237,7 @@
             border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s;
+            position: relative;
         }
 
             .artist-card:hover {
@@ -279,6 +280,52 @@
             font-size: 0.9rem;
             margin: 0 10px;
         }
+
+        .admin-edit-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(212, 175, 55, 0.9);
+            color: #0a0a0a;
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+            .admin-edit-btn:hover {
+                background: #ffd700;
+                transform: scale(1.15);
+            }
+
+        .admin-add-artist {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+            color: #0a0a0a;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+            .admin-add-artist:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+            }
 
         /* Reviews */
         .reviews {
@@ -613,10 +660,18 @@
     <!-- Artists -->
     <section id="artists">
         <h2 class="section-title">Our Artists</h2>
+        {% if user.is_staff %}
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="{% url 'appointments:add_artist' %}" class="admin-add-artist">+ Add Artist</a>
+        </div>
+        {% endif %}
         <div class="artists-grid">
             {% for artist in artists %}
-            <a href="{% url 'appointments:artist_profile' artist.pk %}" style="text-decoration: none; color: inherit;">
             <div class="artist-card">
+                {% if user.is_staff %}
+                <a href="{% url 'appointments:edit_artist' artist.pk %}" class="admin-edit-btn" title="Edit {{ artist.name }}">&#9998;</a>
+                {% endif %}
+                <a href="{% url 'appointments:artist_profile' artist.pk %}" style="text-decoration: none; color: inherit;">
                 {% if artist.image %}
                 <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
                 {% elif artist.image_url %}
@@ -631,8 +686,8 @@
                         <span>View Profile ></span>
                     </div>
                 </div>
+                </a>
             </div>
-            </a>
             {% empty %}
             <div class="artist-card">
                 <img src="" alt="Rob">

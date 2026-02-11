@@ -86,6 +86,21 @@ class Artist(models.Model):
         ordering = ['order', 'name']
 
 
+class PortfolioImage(models.Model):
+    """Portfolio images for an artist's tattoo gallery"""
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name='portfolio_images')
+    image = models.ImageField(upload_to='artists/portfolio/')
+    caption = models.CharField(max_length=200, blank=True)
+    order = models.IntegerField(default=0)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.artist.name} - {self.caption or 'Portfolio Image'}"
+
+    class Meta:
+        ordering = ['order', '-uploaded_at']
+
+
 class Studio(models.Model):
     """Studio locations"""
     name = models.CharField(max_length=200)

@@ -1,0 +1,392 @@
+{% extends 'appointments/base.html' %}
+
+{% block title %}{{ title }} - J'ink Studio{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    .form-page {
+        background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=1600') center/cover;
+        background-attachment: fixed;
+        min-height: calc(100vh - 80px);
+        padding: 40px 20px;
+        margin: -60px calc(-50vw + 50%);
+        width: 100vw;
+    }
+
+    .form-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 40px;
+        background: rgba(20, 20, 20, 0.95);
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .form-header h2 {
+            font-family: 'Permanent Marker', cursive;
+            color: #d4af37;
+            font-size: 2.2rem;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .form-header p {
+            color: #b0b0b0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            color: #d4af37;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(13, 13, 13, 0.8);
+        border: 2px solid #d4af37;
+        border-radius: 8px;
+        color: #f0f0f0;
+        font-size: 1rem;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background: rgba(13, 13, 13, 0.95);
+        }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-check-input {
+        width: 20px;
+        height: 20px;
+        accent-color: #d4af37;
+    }
+
+    .form-check-label {
+        color: #ccc;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .current-image {
+        margin-top: 10px;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        border-radius: 8px;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+        .current-image img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+    .portfolio-section {
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+        .portfolio-section h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            color: #d4af37;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .portfolio-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+    }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+
+    .portfolio-delete {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(220, 53, 69, 0.9);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 26px;
+        height: 26px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+        .portfolio-delete:hover {
+            background: #dc3545;
+            transform: scale(1.1);
+        }
+
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #0d0d0d;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        margin-top: 10px;
+    }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+    .btn-back {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #b0b0b0;
+        text-decoration: none;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover { color: #d4af37; }
+
+    .btn-danger {
+        display: inline-block;
+        padding: 10px 20px;
+        background: rgba(220, 53, 69, 0.15);
+        color: #e57373;
+        border: 2px solid rgba(220, 53, 69, 0.4);
+        border-radius: 8px;
+        text-decoration: none;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+    }
+
+        .btn-danger:hover {
+            background: #dc3545;
+            color: #fff;
+            border-color: #dc3545;
+        }
+
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+    }
+
+        .errorlist li {
+            color: #ff4444;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            background: rgba(255, 68, 68, 0.1);
+            border-left: 3px solid #ff4444;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+
+    .messages { margin-bottom: 20px; }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 4px solid;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .alert-success { background: rgba(76, 175, 80, 0.15); border-color: #4caf50; color: #81c784; }
+    .alert-error { background: rgba(244, 67, 54, 0.15); border-color: #f44336; color: #e57373; }
+
+    .delete-section {
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 1px solid rgba(220, 53, 69, 0.3);
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-container">
+        <div class="form-header">
+            <h2>{{ title }}</h2>
+            <p>{% if artist %}Update artist profile and portfolio{% else %}Add a new artist to the studio{% endif %}</p>
+        </div>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">Name *</label>
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.role.id_for_label }}">Role *</label>
+                {{ form.role }}
+                {{ form.role.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.bio.id_for_label }}">Bio</label>
+                {{ form.bio }}
+                {{ form.bio.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.image.id_for_label }}">Profile Image</label>
+                {{ form.image }}
+                {{ form.image.errors }}
+                {% if artist and artist.image %}
+                <div class="current-image">
+                    <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.instagram.id_for_label }}">Instagram</label>
+                {{ form.instagram }}
+                {{ form.instagram.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.order.id_for_label }}">Display Order</label>
+                {{ form.order }}
+                {{ form.order.errors }}
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    {{ form.is_active }}
+                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Active (visible on site)</label>
+                </div>
+                {{ form.is_active.errors }}
+            </div>
+
+            {% if artist %}
+            <!-- Portfolio Section (only for editing) -->
+            <div class="portfolio-section">
+                <h3>Portfolio Gallery</h3>
+
+                {% if portfolio %}
+                <div class="portfolio-grid">
+                    {% for img in portfolio %}
+                    <div class="portfolio-item">
+                        <img src="{{ img.image.url }}" alt="{{ img.caption }}">
+                        <form method="POST" action="{% url 'appointments:delete_portfolio_image' img.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="portfolio-delete" title="Remove image">X</button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p style="color: #888; font-family: 'Inter', sans-serif; font-size: 0.9rem; margin-bottom: 15px;">No portfolio images yet.</p>
+                {% endif %}
+
+                <div class="form-group">
+                    <label>Upload Portfolio Images</label>
+                    <input type="file" name="portfolio_images" class="form-control" accept="image/*" multiple>
+                    <span style="color: #888; font-size: 0.8rem; font-family: 'Inter', sans-serif;">You can select multiple images at once.</span>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if form.non_field_errors %}
+            <div class="errorlist">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <button type="submit" class="btn-submit">
+                {% if artist %}Save Changes{% else %}Add Artist{% endif %}
+            </button>
+        </form>
+
+        {% if artist %}
+        <div class="delete-section">
+            <form method="POST" action="{% url 'appointments:delete_artist' artist.pk %}" onsubmit="return confirm('Are you sure you want to delete {{ artist.name }}? This cannot be undone.');">
+                {% csrf_token %}
+                <button type="submit" class="btn-danger">Delete Artist</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <a href="{% url 'appointments:landing' %}#artists" class="btn-back">Back to Landing Page</a>
+    </div>
+</div>
+{% endblock %}

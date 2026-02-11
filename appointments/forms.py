@@ -1,7 +1,7 @@
 ﻿from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Appointment, TattooStyle, Artist, Review
+from .models import Appointment, TattooStyle, Artist, Review, PortfolioImage
 
 class RegisterForm(UserCreationForm):
     """Custom registration form with additional fields"""
@@ -171,5 +171,44 @@ class ReviewForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Share your experience...',
                 'rows': 4,
+            }),
+        }
+
+
+# ============================================
+# ARTIST MANAGEMENT FORMS (ADMIN ONLY)
+# ============================================
+class ArtistForm(forms.ModelForm):
+    """Form for admin to add/edit an artist"""
+    class Meta:
+        model = Artist
+        fields = ['name', 'role', 'bio', 'image', 'instagram', 'order', 'is_active']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Artist Name',
+            }),
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'bio': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Artist bio / description...',
+                'rows': 4,
+            }),
+            'image': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+            }),
+            'instagram': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '@handle (without @)',
+            }),
+            'order': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': '0',
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
             }),
         }

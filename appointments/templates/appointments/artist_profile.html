@@ -15,7 +15,7 @@
     }
 
     .profile-container {
-        max-width: 800px;
+        max-width: 900px;
         margin: 0 auto;
     }
 
@@ -122,6 +122,90 @@
             transform: translateY(-2px);
         }
 
+    /* Portfolio Gallery */
+    .portfolio-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .gallery-item {
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+    }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+            border-color: #d4af37;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+    .gallery-caption {
+        padding: 8px 12px;
+        background: rgba(0,0,0,0.6);
+        color: #ccc;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.8rem;
+    }
+
+    .no-portfolio {
+        color: #888;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        text-align: center;
+        padding: 30px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 10px;
+        border: 1px dashed rgba(212, 175, 55, 0.3);
+    }
+
+    /* Lightbox */
+    .lightbox {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.95);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+        }
+
+    .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: #d4af37;
+        font-size: 2.5rem;
+        cursor: pointer;
+        z-index: 10000;
+        transition: color 0.2s;
+    }
+
+        .lightbox-close:hover { color: #ffd700; }
+
     .profile-actions {
         display: flex;
         gap: 15px;
@@ -169,6 +253,26 @@
             transform: translateY(-2px);
         }
 
+    .btn-edit-link {
+        padding: 12px 30px;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        border-radius: 8px;
+        color: #d4af37;
+        text-decoration: none;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        background: rgba(212, 175, 55, 0.1);
+    }
+
+        .btn-edit-link:hover {
+            background: #d4af37;
+            color: #0a0a0a;
+            transform: translateY(-2px);
+        }
+
     .no-image-placeholder {
         width: 100%;
         height: 100%;
@@ -181,13 +285,10 @@
     }
 
     @media (max-width: 768px) {
-        .profile-hero {
-            height: 250px;
-        }
-
-        .profile-hero h1 {
-            font-size: 1.8rem;
-        }
+        .profile-hero { height: 250px; }
+        .profile-hero h1 { font-size: 1.8rem; }
+        .portfolio-gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        .gallery-item img { height: 140px; }
     }
 </style>
 {% endblock %}
@@ -232,12 +333,61 @@
                 </div>
                 {% endif %}
 
+                <!-- Portfolio Gallery -->
+                <div class="profile-section">
+                    <h3>Portfolio</h3>
+                    {% if portfolio %}
+                    <div class="portfolio-gallery">
+                        {% for img in portfolio %}
+                        <div class="gallery-item" onclick="openLightbox('{{ img.image.url }}')">
+                            <img src="{{ img.image.url }}" alt="{{ img.caption|default:artist.name }}">
+                            {% if img.caption %}
+                            <div class="gallery-caption">{{ img.caption }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="no-portfolio">
+                        Portfolio coming soon. Stay tuned for {{ artist.name }}'s latest work!
+                    </div>
+                    {% endif %}
+                </div>
+
                 <div class="profile-actions">
                     <a href="{% url 'appointments:book_session' %}" class="btn-book">Book with {{ artist.name }}</a>
+                    {% if user.is_staff %}
+                    <a href="{% url 'appointments:edit_artist' artist.pk %}" class="btn-edit-link">Edit Artist</a>
+                    {% endif %}
                     <a href="{% url 'appointments:landing' %}#artists" class="btn-back-link">Back to Artists</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-img" src="" alt="Portfolio image">
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openLightbox(src) {
+        document.getElementById('lightbox-img').src = src;
+        document.getElementById('lightbox').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
+</script>
 {% endblock %}

@@ -4,9 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, LoginForm, AppointmentBookingForm, RejectionForm, ReviewForm
+from .forms import RegisterForm, LoginForm, AppointmentBookingForm, RejectionForm, ReviewForm, ArtistForm
 from django.views.generic import ListView
-from .models import Appointment, TattooStyle, Artist, Studio, Review
+from .models import Appointment, TattooStyle, Artist, Studio, Review, PortfolioImage
 
 
 
@@ -303,4 +303,87 @@ def submit_review(request):
 def artist_profile(request, pk):
     """Public artist profile/portfolio page"""
     artist = get_object_or_404(Artist, pk=pk, is_active=True)
-    return render(request, 'appointments/artist_profile.html', {'artist': artist})
+    portfolio = artist.portfolio_images.all()
+    return render(request, 'appointments/artist_profile.html', {
+        'artist': artist,
+        'portfolio': portfolio,
+    })
+
+
+# ============================================
+# ADMIN ARTIST MANAGEMENT VIEWS
+# ============================================
+
+@staff_required
+def add_artist(request):
+    """Admin adds a new artist"""
+    if request.method == 'POST':
+        form = ArtistForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Artist added successfully!')
+            return redirect('appointments:landing')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ArtistForm()
+
+    return render(request, 'appointments/artist_form.html', {
+        'form': form,
+        'title': 'Add New Artist',
+    })
+
+
+@staff_required
+def edit_artist(request, pk):
+    """Admin edits an existing artist and manages portfolio"""
+    artist = get_object_or_404(Artist, pk=pk)
+    portfolio = artist.portfolio_images.all()
+
+    if request.method == 'POST':
+        form = ArtistForm(request.POST, request.FILES, instance=artist)
+        if form.is_valid():
+            form.save()
+
+            # Handle multiple portfolio image uploads
+            portfolio_files = request.FILES.getlist('portfolio_images')
+            for f in portfolio_files:
+                PortfolioImage.objects.create(artist=artist, image=f)
+
+            messages.success(request, f'{artist.name} updated successfully!')
+            return redirect('appointments:artist_profile', pk=artist.pk)
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ArtistForm(instance=artist)
+
+    return render(request, 'appointments/artist_form.html', {
+        'form': form,
+        'artist': artist,
+        'portfolio': portfolio,
+        'title': f'Edit {artist.name}',
+    })
+
+
+@staff_required
+def delete_artist(request, pk):
+    """Admin deletes an artist"""
+    artist = get_object_or_404(Artist, pk=pk)
+    if request.method == 'POST':
+        name = artist.name
+        artist.delete()
+        messages.success(request, f'{name} has been removed.')
+        return redirect('appointments:landing')
+    return redirect('appointments:landing')
+
+
+@staff_required
+def delete_portfolio_image(request, pk):
+    """Admin deletes a single portfolio image"""
+    image = get_object_or_404(PortfolioImage, pk=pk)
+    artist_pk = image.artist.pk
+    if request.method == 'POST':
+        image.image.delete()
+        image.delete()
+        messages.success(request, 'Portfolio image removed.')
+    return redirect('appointments:edit_artist', pk=artist_pk)
