@@ -160,7 +160,6 @@
             <ul>
                 <li><a href="{% url 'appointments:landing' %}#styles">STYLES</a></li>
                 <li><a href="{% url 'appointments:landing' %}#artists">ARTISTS</a></li>
-                <li><a href="{% url 'appointments:landing' %}#enquiry">ENQUIRY</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'appointments:index' %}">DASHBOARD</a></li>
                     {% if user.is_staff %}

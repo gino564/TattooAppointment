@@ -347,7 +347,6 @@
 
         <div class="dashboard-actions">
             <a href="{% url 'appointments:book_session' %}" class="btn-primary-action">Book a Session</a>
-            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-secondary-action">New Enquiry</a>
             <a href="{% url 'appointments:landing' %}" class="btn-secondary-action">Back to Home</a>
         </div>
 
@@ -401,8 +400,8 @@
         {% else %}
         <div class="no-appointments">
             <h3>No Appointments Yet</h3>
-            <p>You haven't booked any sessions. Submit an enquiry to get started!</p>
-            <a href="{% url 'appointments:landing' %}#enquiry" class="btn-primary-action">Make an Enquiry</a>
+            <p>You haven't booked any sessions. Book your first session to get started!</p>
+            <a href="{% url 'appointments:book_session' %}" class="btn-primary-action">Book a Session</a>
         </div>
         {% endif %}
     </div>

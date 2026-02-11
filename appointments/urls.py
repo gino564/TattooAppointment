@@ -5,8 +5,7 @@ app_name = 'appointments'
 
 urlpatterns = [
     # PUBLIC PAGES (NO LOGIN REQUIRED)
-    path('landing/', views.landing_page, name='landing'),# NEW: Main homepage
-    path('enquiry/submit/', views.enquiry_submit, name='enquiry_submit'),  # NEW: Handle enquiry form
+    path('landing/', views.landing_page, name='landing'),
     
     # Authentication URLs
     path('login/', views.login_view, name='login'),

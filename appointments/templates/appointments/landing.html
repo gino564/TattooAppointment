@@ -587,7 +587,7 @@
         <ul>
             <li><a href="#styles">STYLES</a></li>
             <li><a href="#artists">ARTISTS</a></li>
-            <li><a href="#enquiry">ENQUIRY</a></li>
+            <li><a href="{% url 'appointments:book_session' %}">BOOK NOW</a></li>
             {% if user.is_authenticated %}
                 <li><a href="{% url 'appointments:index' %}">DASHBOARD</a></li>
                 <li><a href="{% url 'appointments:logout' %}" style="color: #d4af37; border: 2px solid #d4af37; border-radius: 6px;">LOGOUT</a></li>
@@ -603,7 +603,7 @@
         <p>This Tattoo Appointment System is a Final Project in-- </p>
         <div class="hero-buttons">
             <a href="#styles" class="btn btn-primary">View Gallery</a>
-            <a href="#enquiry" class="btn btn-secondary">Tattoo Enquiry</a>
+            <a href="{% url 'appointments:book_session' %}" class="btn btn-secondary">Book a Session</a>
         </div>
     </section>
 
@@ -655,7 +655,7 @@
          
            
             <br>
-            <a href="#enquiry" class="btn btn-secondary">More</a>
+            <a href="#artists" class="btn btn-secondary">More</a>
         </div>
     </section>
 
@@ -841,44 +841,6 @@
                 <p class="review-text">"I had my very first tattoo at this wonderful studio. Highly professional yet friendly atmosphere, and I love the result! Will definitely be back!"</p>
             </div>
             {% endfor %}
-        </div>
-    </section>
-
-    <!-- Tattoo Enquiry Form -->
-    <section id="enquiry" class="enquiry">
-        <div class="enquiry-container">
-            <h2>TATTOO ENQUIRY</h2>
-            <p>Interested in getting a tattoo? A tattoo is a lifetime commitment. Let us know your ideas so we can book a time for you!</p>
-
-            <form method="POST" action="{% url 'appointments:enquiry_submit' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="name">Your Name *</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone Number *</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="message">Tell Us About Your Tattoo Idea *</label>
-                    <textarea id="message" name="message" required placeholder="Describe your tattoo design, placement, size, etc."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="preferred_date">Preferred Date (Optional)</label>
-                    <input type="date" id="preferred_date" name="preferred_date">
-                </div>
-
-                <button type="submit" class="submit-btn">TATTOO ENQUIRY</button>
-            </form>
         </div>
     </section>
 

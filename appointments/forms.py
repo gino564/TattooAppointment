@@ -1,7 +1,7 @@
 ﻿from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Enquiry, Appointment, TattooStyle, Artist
+from .models import Appointment, TattooStyle, Artist
 
 class RegisterForm(UserCreationForm):
     """Custom registration form with additional fields"""
@@ -80,37 +80,6 @@ class LoginForm(AuthenticationForm):
         })
     )
 
-
-# ============================================
-# NEW: ENQUIRY FORM FOR LANDING PAGE
-# ============================================
-class EnquiryForm(forms.ModelForm):
-    """Form for tattoo enquiries from landing page"""
-    class Meta:
-        model = Enquiry
-        fields = ['name', 'email', 'phone', 'message', 'preferred_date']
-        widgets = {
-            'name': forms.TextInput(attrs={
-                'placeholder': 'Your Name',
-                'required': True,
-            }),
-            'email': forms.EmailInput(attrs={
-                'placeholder': 'Email Address',
-                'required': True,
-            }),
-            'phone': forms.TextInput(attrs={
-                'placeholder': 'Phone Number',
-                'required': True,
-            }),
-            'message': forms.Textarea(attrs={
-                'placeholder': 'Tell us about your tattoo idea...',
-                'rows': 5,
-                'required': True,
-            }),
-            'preferred_date': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-        }
 
 
 # ============================================

@@ -4,9 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, LoginForm, EnquiryForm, AppointmentBookingForm, RejectionForm
+from .forms import RegisterForm, LoginForm, AppointmentBookingForm, RejectionForm
 from django.views.generic import ListView
-from .models import Appointment, TattooStyle, Artist, Studio, Review, Enquiry
+from .models import Appointment, TattooStyle, Artist, Studio, Review
 
 
 
@@ -30,33 +30,6 @@ def landing_page(request):
     return render(request, 'appointments/landing.html', context)
 
 
-def enquiry_submit(request):
-    """Handle tattoo enquiry form submission"""
-    if request.method == 'POST':
-        form = EnquiryForm(request.POST)
-        if form.is_valid():
-            # Check if user is authenticated
-            if not request.user.is_authenticated:
-                # Store form data in session for later submission
-                request.session['pending_enquiry'] = {
-                    'name': form.cleaned_data.get('name'),
-                    'email': form.cleaned_data.get('email'),
-                    'phone': form.cleaned_data.get('phone'),
-                    'message': form.cleaned_data.get('message'),
-                    'preferred_date': form.cleaned_data.get('preferred_date').isoformat() if form.cleaned_data.get('preferred_date') else None,
-                }
-                messages.info(request, 'Please login or register to submit your tattoo enquiry.')
-                return redirect('appointments:login')
-
-            # User is authenticated, save the enquiry
-            form.save()
-            messages.success(request, 'Thank you for your enquiry! We\'ll get back to you within 24 hours.')
-            return redirect('appointments:landing')
-        else:
-            messages.error(request, 'Please correct the errors in the form.')
-            return redirect('appointments:landing')
-    return redirect('appointments:landing')
-
 
 # ============================================
 # AUTHENTICATION VIEWS
@@ -77,26 +50,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-
-                # Check if there's a pending enquiry in session
-                if 'pending_enquiry' in request.session:
-                    from datetime import date
-                    enquiry_data = request.session['pending_enquiry']
-
-                    # Convert date string back to date object if present
-                    if enquiry_data.get('preferred_date'):
-                        enquiry_data['preferred_date'] = date.fromisoformat(enquiry_data['preferred_date'])
-
-                    # Create and save the enquiry
-                    Enquiry.objects.create(**enquiry_data)
-
-                    # Clear the session data
-                    del request.session['pending_enquiry']
-
-                    messages.success(request, f'Welcome back, {username}! Your tattoo enquiry has been submitted successfully.')
-                    return redirect('appointments:landing')
-                else:
-                    messages.success(request, f'Welcome back, {username}!')
+                messages.success(request, f'Welcome back, {username}!')
 
                 # Role-based redirect
                 if user.is_staff:
@@ -125,27 +79,8 @@ def register_view(request):
 
             # Auto-login the user after registration
             login(request, user)
-
-            # Check if there's a pending enquiry in session
-            if 'pending_enquiry' in request.session:
-                from datetime import date
-                enquiry_data = request.session['pending_enquiry']
-
-                # Convert date string back to date object if present
-                if enquiry_data.get('preferred_date'):
-                    enquiry_data['preferred_date'] = date.fromisoformat(enquiry_data['preferred_date'])
-
-                # Create and save the enquiry
-                Enquiry.objects.create(**enquiry_data)
-
-                # Clear the session data
-                del request.session['pending_enquiry']
-
-                messages.success(request, f'Welcome, {username}! Your account has been created and your tattoo enquiry has been submitted successfully.')
-                return redirect('appointments:landing')
-            else:
-                messages.success(request, f'Account created for {username}! Welcome to J\'INK Studio.')
-                return redirect('appointments:index')
+            messages.success(request, f'Account created for {username}! Welcome to J\'INK Studio.')
+            return redirect('appointments:index')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
